@@ -1,19 +1,46 @@
 import React from "react";
 import s from './TodoList.module.css'
+import {FilterValueType, TaskType} from "../../App";
+import {TodoListTitle} from "./TodoListTitle";
 
+type TodoListPropsType = {
+    id: string
+    title: string
+    filter: FilterValueType
+    tasks: TaskType[]
+    removeTodo: (todoListId: string) => void
+}
 
+export const TodoList: React.FC<TodoListPropsType> = ({
+                                                          id,
+                                                          title,
+                                                          filter,
+                                                          tasks,
+                                                          ...props
+                                                      }) => {
+    const removeTodo = () => props.removeTodo(id)
 
-export const TodoList = () => {
+    const mappedTasks = tasks.map(m => (
+        <li key={m.id} id={m.id}>
+            {m.title}
+            <input type="checkbox" checked={m.isDone}/>
+        </li>
+    ))
+
     return (
         <div className={s.todoList}>
-            <div className={s.header}>
-                Header
-            </div>
+            <TodoListTitle title={title}
+                           callBack={removeTodo}
+            />
+
             <div className={s.body}>
-                body
+                {mappedTasks}
             </div>
+
             <div className={s.filters}>
-                buttons
+                <button>All</button>
+                <button>Active</button>
+                <button>Completed</button>
             </div>
         </div>
     )
