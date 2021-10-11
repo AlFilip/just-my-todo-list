@@ -9,6 +9,7 @@ type TodoListPropsType = {
     filter: FilterValueType
     tasks: TaskType[]
     removeTodo: (todoListId: string) => void
+    changeTodoTitle: (todoListId: string, title: string) => void
 }
 
 export const TodoList: React.FC<TodoListPropsType> = ({
@@ -19,6 +20,8 @@ export const TodoList: React.FC<TodoListPropsType> = ({
                                                           ...props
                                                       }) => {
     const removeTodo = () => props.removeTodo(id)
+    const changeTodoTitle = (title: string) => props.changeTodoTitle(id, title)
+
 
     const mappedTasks = tasks.map(m => (
         <li key={m.id} id={m.id}>
@@ -31,6 +34,7 @@ export const TodoList: React.FC<TodoListPropsType> = ({
         <div className={s.todoList}>
             <TodoListTitle title={title}
                            callBack={removeTodo}
+                           onChangeCallBack={changeTodoTitle}
             />
 
             <div className={s.body}>

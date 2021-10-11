@@ -2,7 +2,7 @@ import React, {useReducer, useState} from 'react';
 import './App.css';
 import {v1} from "uuid";
 import {TodoList} from "./Components/TodoList/TodoList";
-import {removeTodoListAC, todoListReducer} from "./reducers/todoListReducer";
+import {changeTodoListTitleAC, removeTodoListAC, todoListReducer} from "./reducers/todoListReducer";
 
 
 export type TaskType = { id: string, title: string, isDone: boolean }
@@ -32,6 +32,9 @@ function App() {
         ]
     })
     const removeTodo = (todoListId: string) => dispatchTodoList(removeTodoListAC(todoListId))
+    const changeTodoTitle = (todoListId: string, title: string) => {
+        dispatchTodoList(changeTodoListTitleAC(todoListId, title))
+    }
 
     const mappedTodoLists = todoLists.map(m => <TodoList key={m.id}
                                                          id={m.id}
@@ -39,6 +42,7 @@ function App() {
                                                          title={m.title}
                                                          tasks={tasks[m.id]}
                                                          removeTodo={removeTodo}
+                                                         changeTodoTitle={changeTodoTitle}
     />)
 
     return (
