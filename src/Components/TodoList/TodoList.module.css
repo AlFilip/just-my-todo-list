@@ -4,3 +4,12 @@
     border: 2px solid rgba(255, 0, 0, 0.44);
     border-radius: 1rem;
 }
+
+.btnDiv{
+    display: flex;
+    flex-direction: column;
+}
+
+.deleteBtn {
+    align-self: flex-end;
+}

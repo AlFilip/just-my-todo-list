@@ -15,12 +15,16 @@ export const TodoListTitle: React.FC<TodoListTitlePropsType> = ({
                                                                 }) => {
     const onButtonClickHandler = () => callBack()
     return (
-        <div className={s.header}>
-            <EditableSpan title={title}
-                          callBack={onChangeCallBack}
-            />
-            <button onClick={onButtonClickHandler}>x</button>
-        </div>
+        <>
+            <div className={s.btnDiv}>
+                <button className={s.deleteBtn} onClick={onButtonClickHandler}>x</button>
+            </div>
+            <div className={s.title}>
+                <EditableSpan title={title}
+                              callBack={onChangeCallBack}
+                />
+            </div>
+        </>
     )
 }
 

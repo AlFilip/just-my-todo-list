@@ -39,8 +39,10 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = ({
     return (
         <span onDoubleClick={toggleEditMode}>
             {!editMode && titleValue}
-            {editMode && <>
-                <input autoFocus value={titleValue}
+            {editMode
+            && <>
+                <input autoFocus
+                       value={titleValue}
                        onKeyDown={onKeyDownHandler}
                        onChange={onTitleChangeHandler}
                        onBlur={saveChanges}/>
