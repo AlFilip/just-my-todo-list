@@ -1,4 +1,5 @@
 import {TodoListType} from "../App";
+import {v1} from "uuid";
 
 export const todoListReducer = (state: Array<TodoListType>, action: TodoListActionTypes): Array<TodoListType> => {
     switch (action.type) {
@@ -6,6 +7,8 @@ export const todoListReducer = (state: Array<TodoListType>, action: TodoListActi
             return state.filter(f => f.id !== action.todoListId)
         case "CHANGE_TITLE":
             return state.map(m => m.id === action.todoListId ? {...m, title: action.title} : m)
+        case "ADD_TODO_LIST":
+            return [...state, {id: v1(), title: action.title, filter: "All"}]
         default:
             return state
 

@@ -4,19 +4,25 @@ type EditableSpanPropsType = {
     title: string
     callBack: (title: string) => void
     buttonTitle?: string
+    isEditMode?: boolean
 }
 export const EditableSpan: React.FC<EditableSpanPropsType> = ({
                                                                   title,
                                                                   callBack,
                                                                   buttonTitle,
+                                                                  isEditMode,
+                                                                  ...props
                                                               }) => {
     const [titleValue, setTitleValue] = useState(title)
-    const [editMode, setEditMode] = useState(false)
+    const [editMode, setEditMode] = useState(isEditMode)
     const toggleEditMode = () => setEditMode(!editMode)
 
     const saveChanges = () => {
-        toggleEditMode()
-        callBack(titleValue)
+        titleValue
+        &&callBack(titleValue)
+
+        titleValue
+        && toggleEditMode()
     }
     const discardChanges = () => {
         toggleEditMode()
@@ -28,7 +34,8 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = ({
                 discardChanges()
                 break
             case 'Enter':
-                saveChanges()
+                titleValue
+                && saveChanges()
                 break
         }
     }
@@ -38,7 +45,8 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = ({
 
     return (
         <span onDoubleClick={toggleEditMode}>
-            {!editMode && titleValue}
+            {!editMode && (props.children || titleValue)}
+
             {editMode
             && <>
                 <input autoFocus
@@ -46,7 +54,9 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = ({
                        onKeyDown={onKeyDownHandler}
                        onChange={onTitleChangeHandler}
                        onBlur={saveChanges}/>
-                {buttonTitle && <button onClick={saveChanges}>Rename</button>}
+
+                {buttonTitle
+                && <button onClick={saveChanges}>{buttonTitle}</button>}
             </>
             }
 

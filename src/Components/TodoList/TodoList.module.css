@@ -13,3 +13,7 @@
 .deleteBtn {
     align-self: flex-end;
 }
+
+.activeBtn {
+    background-color: gold;
+}
