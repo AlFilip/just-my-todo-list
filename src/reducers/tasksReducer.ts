@@ -8,7 +8,7 @@ export const tasksReducer = (state: TasksStateType, action: TasksReducerActionTy
             return {
                 ...state,
                 [action.todoListId]: state[action.todoListId]
-                    ? [...state[action.todoListId], {id: v1(), title: action.title, isDone: false}]
+                    ? [{id: v1(), title: action.title, isDone: false}, ...state[action.todoListId], ]
                     : [{id: v1(), title: action.title, isDone: false}]
             }
         case "REMOVE_TASK":

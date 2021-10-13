@@ -1,4 +1,4 @@
-import React, {MouseEventHandler, useState} from "react";
+import React, {useState} from "react";
 import s from './TodoList.module.css'
 import {FilterValueType, TaskType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
@@ -70,8 +70,11 @@ export const TodoList: React.FC<TodoListPropsType> = ({
             <div className={s.filters}>
                 {/*{buttons}*/}
                 <button className={todoListFilter === 'All' ? s.activeBtn : ''} onClick={setFilterAll}>All</button>
-                <button className={todoListFilter === 'Active' ? s.activeBtn : ''} onClick={setFilterActive}>Active</button>
-                <button className={todoListFilter === 'Completed' ? s.activeBtn : ''} onClick={setFilterCompleted}>Completed</button>
+                <button className={todoListFilter === 'Active' ? s.activeBtn : ''} onClick={setFilterActive}>Active
+                </button>
+                <button className={todoListFilter === 'Completed' ? s.activeBtn : ''}
+                        onClick={setFilterCompleted}>Completed
+                </button>
             </div>
         </div>
     )
