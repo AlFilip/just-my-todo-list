@@ -44,7 +44,8 @@ export const TodoListTitle: React.FC<TodoListTitlePropsType> = ({
                 />
                 <button onClick={toggleAddTaskMode} >+</button>
                 <div>
-                    {addTaskMode && <input autoFocus type="text"
+                    {addTaskMode && <input autoFocus
+                                           type="text"
                                            value={addTaskValue}
                                            onChange={onChangeHandler}
                                            onKeyDown={onKeyDownHandler}

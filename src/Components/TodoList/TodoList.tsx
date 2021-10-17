@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {MouseEventHandler, useMemo, useState} from "react";
 import s from './TodoList.module.css'
 import {FilterValueType, TaskType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
@@ -43,17 +43,22 @@ export const TodoList: React.FC<TodoListPropsType> = ({
     const renameTask = (taskId: string, title: string,) => props.renameTask(id, taskId, title)
     const changeIsDone = (taskId: string, isDone: boolean) => props.changeIsDone(id, taskId, isDone)
 
-    const setFilterAll = () => setTodoListFilter('All')
-    const setFilterActive = () => setTodoListFilter('Active')
-    const setFilterCompleted = () => setTodoListFilter('Completed')
 
-    // const changeFilter:MouseEventHandler<HTMLButtonElement> = (e) => {
-    //     console.log(e.currentTarget.innerHTML)
-    //     const value = e.currentTarget.innerHTML
-    //     value && (value in FilterValueType) && setTodoListFilter(value)
-    // }
-    // const filtersArr: FilterValueType[] = ['All' , 'Completed' , 'Active']
-    // const buttons = filtersArr.map(m => <button onClick={changeFilter}>{m}</button>)
+    const changeFilter: MouseEventHandler<HTMLButtonElement> = (e) => {
+        const filterValue = e.currentTarget.dataset.filter as FilterValueType
+        filterValue
+        && setTodoListFilter(filterValue)
+    }
+
+    const buttons = useMemo(() => ['All', 'Active', 'Completed']
+        .map(m => <button key={m}
+                          className={todoListFilter === m ? s.activeBtn : ''}
+                          data-filter={m}
+                          onClick={changeFilter}>{m}
+            </button>
+        ), [todoListFilter]
+    )
+    console.log(todoListFilter)
     return (
         <div className={s.todoList}>
             <TodoListTitle title={title}
@@ -68,13 +73,7 @@ export const TodoList: React.FC<TodoListPropsType> = ({
             />
 
             <div className={s.filters}>
-                {/*{buttons}*/}
-                <button className={todoListFilter === 'All' ? s.activeBtn : ''} onClick={setFilterAll}>All</button>
-                <button className={todoListFilter === 'Active' ? s.activeBtn : ''} onClick={setFilterActive}>Active
-                </button>
-                <button className={todoListFilter === 'Completed' ? s.activeBtn : ''}
-                        onClick={setFilterCompleted}>Completed
-                </button>
+                {buttons}
             </div>
         </div>
     )
