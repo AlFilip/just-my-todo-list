@@ -9,12 +9,12 @@ type TodoListTitlePropsType = {
     addTask: (title: string) => void
 }
 
-export const TodoListTitle: React.FC<TodoListTitlePropsType> = ({
-                                                                    title,
-                                                                    onChangeCallBack,
-                                                                    callBack,
-                                                                    ...props
-                                                                }) => {
+export const TodoListTitle: React.FC<TodoListTitlePropsType> = React.memo(({
+                                                                               title,
+                                                                               onChangeCallBack,
+                                                                               callBack,
+                                                                               ...props
+                                                                           }) => {
     const [addTaskMode, setAddTaskMode] = useState(false)
     const [addTaskValue, setAddTaskValue] = useState('')
     const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -42,7 +42,7 @@ export const TodoListTitle: React.FC<TodoListTitlePropsType> = ({
                 <EditableSpan title={title}
                               callBack={onChangeCallBack}
                 />
-                <button onClick={toggleAddTaskMode} >+</button>
+                <button onClick={toggleAddTaskMode}>+</button>
                 <div>
                     {addTaskMode && <input autoFocus
                                            type="text"
@@ -54,5 +54,5 @@ export const TodoListTitle: React.FC<TodoListTitlePropsType> = ({
             </div>
         </>
     )
-}
+})
 

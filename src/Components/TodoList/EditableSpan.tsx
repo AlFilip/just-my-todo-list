@@ -6,7 +6,7 @@ type EditableSpanPropsType = {
     buttonTitle?: string
     isEditMode?: boolean
 }
-export const EditableSpan: React.FC<EditableSpanPropsType> = ({
+export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo(({
                                                                   title,
                                                                   callBack,
                                                                   buttonTitle,
@@ -18,6 +18,7 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = ({
     const toggleEditMode = () => setEditMode(!editMode)
 
     const saveChanges = () => {
+        debugger
         titleValue
         &&callBack(titleValue)
 
@@ -42,7 +43,6 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = ({
     const onTitleChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
         setTitleValue(e.currentTarget.value)
     }
-
     return (
         <span onDoubleClick={toggleEditMode}>
             {!editMode && (props.children || titleValue)}
@@ -62,4 +62,4 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = ({
 
         </span>
     )
-}
+})

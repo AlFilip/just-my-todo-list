@@ -51,8 +51,7 @@ const tasksReducer = (state = initState, action: TasksReducerActionTypes): Tasks
     }
 }
 
-type TasksReducerActionTypes = AddTaskType | RemoveTaskType | RenameTaskType | ChangeIsDoneTaskType
-
+export type TasksReducerActionTypes = AddTaskType | RemoveTaskType | RenameTaskType | ChangeIsDoneTaskType
 
 type AddTaskType = ReturnType<typeof addTaskAC>
 export const addTaskAC = (todoListId: string, title: string) => ({

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import './App.css';
 import {TodoList} from "./Components/TodoList/TodoList";
 import {EditableSpan} from "./Components/TodoList/EditableSpan";
@@ -21,7 +21,9 @@ function App() {
     const dispatch = useDispatch<Dispatch<actionsTypes>>()
     const todoLists = useSelector<allStateType, Array<TodoListType>>(state => state.todo)
 
-    const addTodo = (title: string) => dispatch(addTodoList({title}))
+    const addTodo = useCallback((title: string) => {
+        dispatch(addTodoList({title}))
+    }, [dispatch])
 
     const mappedTodoLists = todoLists.map(m => <TodoList key={m.id}
                                                          todoListId={m.id}

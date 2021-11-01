@@ -10,7 +10,8 @@ type TasksPropsType = {
     changeIsDone: (taskId: string, isDone: boolean) => void
 }
 
-export const Tasks: React.FC<TasksPropsType> = (props) => {
+export const Tasks: React.FC<TasksPropsType> = React.memo((props) => {
+
     const mappedTasks = props.tasks
         && props.tasks.map(m => <Task key={m.id}
                                       title={m.title}
@@ -26,4 +27,4 @@ export const Tasks: React.FC<TasksPropsType> = (props) => {
             {mappedTasks}
         </div>
     )
-}
+})
