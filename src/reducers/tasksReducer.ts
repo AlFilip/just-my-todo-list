@@ -1,14 +1,26 @@
 import {TasksStateType} from "../App";
 import {v1} from "uuid";
+import {todoListId1, todoListId2} from "./todoListReducer";
+
+const initState: TasksStateType = {
+    [todoListId1]: [
+        {id: v1(), title: "HTML&CSS", isDone: true},
+        {id: v1(), title: "JS", isDone: true}
+    ],
+    [todoListId2]: [
+        {id: v1(), title: "Milk", isDone: true},
+        {id: v1(), title: "React Book", isDone: false}
+    ]
+}
 
 
-export const tasksReducer = (state: TasksStateType, action: TasksReducerActionTypes): TasksStateType => {
+const tasksReducer = (state = initState, action: TasksReducerActionTypes): TasksStateType => {
     switch (action.type) {
         case "ADD_TASK":
             return {
                 ...state,
                 [action.todoListId]: state[action.todoListId]
-                    ? [{id: v1(), title: action.title, isDone: false}, ...state[action.todoListId], ]
+                    ? [{id: v1(), title: action.title, isDone: false}, ...state[action.todoListId],]
                     : [{id: v1(), title: action.title, isDone: false}]
             }
         case "REMOVE_TASK":
@@ -72,3 +84,5 @@ export const changeIsDoneAC = (todoListId: string, taskId: string, isDone: boole
     isDone
 } as const)
 
+
+export default tasksReducer

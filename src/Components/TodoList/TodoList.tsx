@@ -3,45 +3,47 @@ import s from './TodoList.module.css'
 import {FilterValueType, TaskType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
 import {Tasks} from "./Tasks/Tasks";
+import {useDispatch, useSelector} from "react-redux";
+import {allStateType} from "../../redux/store";
+import {removeTodoList, renameTodoList} from "../../actions/todoListActions";
+import {Dispatch} from "redux";
+import {addTaskAC, changeIsDoneAC, removeTaskAC, renameTaskAC} from "../../reducers/tasksReducer";
 
 type TodoListPropsType = {
-    id: string
+    todoListId: string
     title: string
     filter: FilterValueType
-    tasks: TaskType[]
-    removeTodo: (todoListId: string) => void
-    changeTodoTitle: (todoListId: string, title: string) => void
-    addTask: (todoListId: string, title: string) => void
-    removeTask: (todoListId: string, taskId: string) => void
-    renameTask: (todoListId: string, taskId: string, newTitle: string) => void
-    changeIsDone: (todoListId: string, taskId: string, isDone: boolean) => void
 }
 
 export const TodoList: React.FC<TodoListPropsType> = ({
-                                                          id,
+                                                          todoListId,
                                                           title,
                                                           filter,
-                                                          tasks,
+                                                          // tasks,
                                                           ...props
                                                       }) => {
+    const dispatch = useDispatch<Dispatch>()
     const [todoListFilter, setTodoListFilter] = useState(filter)
-    const getFilteredTasks = () => {
+    const tasks = useSelector<allStateType, TaskType[]>(state => state.tasks[todoListId])
+    const filteredTasks = useMemo(() => {
         switch (todoListFilter) {
             case "All":
+            default:
                 return tasks
             case "Active":
                 return tasks.filter(f => !f.isDone)
             case "Completed":
                 return tasks.filter(f => f.isDone)
         }
-    }
-    const removeTodo = () => props.removeTodo(id)
-    const changeTodoTitle = (title: string) => props.changeTodoTitle(id, title)
+    }, [tasks, todoListFilter])
 
-    const addTask = (title: string) => props.addTask(id, title)
-    const removeTask = (taskId: string) => props.removeTask(id, taskId)
-    const renameTask = (taskId: string, title: string,) => props.renameTask(id, taskId, title)
-    const changeIsDone = (taskId: string, isDone: boolean) => props.changeIsDone(id, taskId, isDone)
+    const removeTodo = () => dispatch(removeTodoList({todoListId}))
+    const changeTodoTitle = (title: string) => dispatch(renameTodoList({todoListId, title}))
+
+    const addTask = (title: string) => dispatch(addTaskAC(todoListId, title))
+    const removeTask = (taskId: string) => dispatch(removeTaskAC(todoListId, taskId))
+    const renameTask = (taskId: string, title: string) => dispatch(renameTaskAC(todoListId, taskId, title))
+    const changeIsDone = (taskId: string, isDone: boolean) => dispatch(changeIsDoneAC(todoListId, taskId, isDone))
 
 
     const changeFilter: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -58,7 +60,6 @@ export const TodoList: React.FC<TodoListPropsType> = ({
             </button>
         ), [todoListFilter]
     )
-    console.log(todoListFilter)
     return (
         <div className={s.todoList}>
             <TodoListTitle title={title}
@@ -66,7 +67,7 @@ export const TodoList: React.FC<TodoListPropsType> = ({
                            onChangeCallBack={changeTodoTitle}
                            addTask={addTask}
             />
-            <Tasks tasks={getFilteredTasks()}
+            <Tasks tasks={filteredTasks}
                    renameTask={renameTask}
                    changeIsDone={changeIsDone}
                    removeTask={removeTask}
