@@ -22,6 +22,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
                                                           // tasks,
                                                           ...props
                                                       }) => {
+    // console.log('TodoList')
     const dispatch = useDispatch<Dispatch>()
     const [todoListFilter, setTodoListFilter] = useState(filter)
     const tasks = useSelector<allStateType, TaskType[]>(state => state.tasks[todoListId])
@@ -41,6 +42,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     const removeTodo = useCallback(() => {
         dispatch(removeTodoList({todoListId}))
     }, [dispatch, todoListId])
+
     const changeTodoTitle = useCallback((title: string) => {
         dispatch(renameTodoList({todoListId, title}))
     }, [dispatch, todoListId])
@@ -48,12 +50,15 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     const addTask = useCallback((title: string) => {
         dispatch(addTaskAC(todoListId, title))
     }, [dispatch, todoListId])
+
     const removeTask = useCallback((taskId: string) => {
         dispatch(removeTaskAC(todoListId, taskId))
     }, [dispatch, todoListId])
+
     const renameTask = useCallback((taskId: string, title: string) => {
         dispatch(renameTaskAC(todoListId, taskId, title))
     }, [dispatch, todoListId])
+
     const changeIsDone = useCallback((taskId: string, isDone: boolean) => {
         dispatch(changeIsDoneAC(todoListId, taskId, isDone))
     }, [dispatch, todoListId])

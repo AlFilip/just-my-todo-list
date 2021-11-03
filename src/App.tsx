@@ -18,6 +18,7 @@ export type FilterValueType = 'All' | 'Completed' | 'Active'
 export type TodoListType = { id: string, title: string, filter: FilterValueType }
 
 function App() {
+    console.log('App')
     const dispatch = useDispatch<Dispatch<actionsTypes>>()
     const todoLists = useSelector<allStateType, Array<TodoListType>>(state => state.todo)
 

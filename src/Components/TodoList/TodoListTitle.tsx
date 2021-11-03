@@ -15,6 +15,7 @@ export const TodoListTitle: React.FC<TodoListTitlePropsType> = React.memo(({
                                                                                callBack,
                                                                                ...props
                                                                            }) => {
+    // console.log('TodoListTitle')
     const [addTaskMode, setAddTaskMode] = useState(false)
     const [addTaskValue, setAddTaskValue] = useState('')
     const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {

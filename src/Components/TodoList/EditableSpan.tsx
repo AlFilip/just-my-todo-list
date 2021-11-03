@@ -13,12 +13,13 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo(({
                                                                   isEditMode,
                                                                   ...props
                                                               }) => {
+
+    // console.log('EditableSpan')
     const [titleValue, setTitleValue] = useState(title)
     const [editMode, setEditMode] = useState(isEditMode)
     const toggleEditMode = () => setEditMode(!editMode)
 
     const saveChanges = () => {
-        debugger
         titleValue
         &&callBack(titleValue)
 

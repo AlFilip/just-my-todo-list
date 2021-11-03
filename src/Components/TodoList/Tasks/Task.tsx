@@ -19,6 +19,7 @@ export const Task: React.FC<TaskPropsType> = ({
                                                   changeIsDone,
                                               }) => {
 
+    // console.log('Task')
     const changeTitle = useCallback((title: string) => renameTask(id, title),[id, renameTask])
     const onChangeCheckedHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
         changeIsDone(id, e.currentTarget.checked)

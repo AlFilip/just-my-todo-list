@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import s from "../TodoList.module.css";
 import {TaskType} from "../../../App";
 import {Task} from "./Task";
@@ -12,7 +12,8 @@ type TasksPropsType = {
 
 export const Tasks: React.FC<TasksPropsType> = React.memo((props) => {
 
-    const mappedTasks = props.tasks
+    // console.log('Tasks')
+    const mappedTasks = useMemo(() => props.tasks
         && props.tasks.map(m => <Task key={m.id}
                                       title={m.title}
                                       id={m.id}
@@ -20,7 +21,7 @@ export const Tasks: React.FC<TasksPropsType> = React.memo((props) => {
                                       removeTask={props.removeTask}
                                       renameTask={props.renameTask}
                                       changeIsDone={props.changeIsDone}
-        />)
+        />),[props.tasks, props.renameTask, props.removeTask, props.changeIsDone])
 
     return (
         <div className={s.body}>
