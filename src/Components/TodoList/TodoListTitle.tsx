@@ -24,7 +24,7 @@ export const TodoListTitle: React.FC<TodoListTitlePropsType> = React.memo(({
         <>
             <div className={s.title}>
                 <EditableSpan title={title} callBack={onChangeCallBack}/>
-                <IconButton color="primary" aria-label="add" size='small' onClick={onButtonClickHandler}>
+                <IconButton color="primary" size='small' onClick={onButtonClickHandler}>
                     <Delete/>
                 </IconButton>
             </div>

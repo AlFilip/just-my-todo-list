@@ -2,6 +2,7 @@ import React, {ChangeEventHandler, useCallback} from "react";
 import {EditableSpan} from "../EditableSpan";
 import Delete from "@mui/icons-material/Delete";
 import {Checkbox, IconButton, ListItemButton} from "@mui/material";
+import s from './Task.module.css'
 
 export type TaskPropsType = {
     id: string
@@ -30,13 +31,17 @@ export const Task: React.FC<TaskPropsType> = ({
 
     return (
         <ListItemButton key={id} id={id}>
-            <EditableSpan title={title}
-                          callBack={changeTitle}
-            />
-            <Checkbox checked={isDone} onChange={onChangeCheckedHandler}/>
-            <IconButton color="primary" aria-label="add" size='small' onClick={killTask}>
-                <Delete/>
-            </IconButton>
+            <div className={s.listContainer}>
+                <div>
+                    <Checkbox checked={isDone} onChange={onChangeCheckedHandler}/>
+                    <EditableSpan title={title}
+                                  callBack={changeTitle}
+                    />
+                </div>
+                <IconButton color="primary" size='small' onClick={killTask}>
+                    <Delete/>
+                </IconButton>
+            </div>
         </ListItemButton>
     )
 }
