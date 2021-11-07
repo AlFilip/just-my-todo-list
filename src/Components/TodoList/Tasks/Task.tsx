@@ -1,5 +1,7 @@
 import React, {ChangeEventHandler, useCallback} from "react";
 import {EditableSpan} from "../EditableSpan";
+import Delete from "@mui/icons-material/Delete";
+import {Checkbox, IconButton, ListItemButton} from "@mui/material";
 
 export type TaskPropsType = {
     id: string
@@ -20,19 +22,21 @@ export const Task: React.FC<TaskPropsType> = ({
                                               }) => {
 
     // console.log('Task')
-    const changeTitle = useCallback((title: string) => renameTask(id, title),[id, renameTask])
+    const changeTitle = useCallback((title: string) => renameTask(id, title), [id, renameTask])
     const onChangeCheckedHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
         changeIsDone(id, e.currentTarget.checked)
     }
     const killTask = () => removeTask(id)
 
     return (
-        <li key={id} id={id}>
+        <ListItemButton key={id} id={id}>
             <EditableSpan title={title}
                           callBack={changeTitle}
             />
-            <input type="checkbox" checked={isDone} onChange={onChangeCheckedHandler}/>
-            <button onClick={killTask}>x</button>
-        </li>
+            <Checkbox checked={isDone} onChange={onChangeCheckedHandler}/>
+            <IconButton color="primary" aria-label="add" size='small' onClick={killTask}>
+                <Delete/>
+            </IconButton>
+        </ListItemButton>
     )
 }

@@ -2,6 +2,7 @@ import React, {useMemo} from "react";
 import s from "../TodoList.module.css";
 import {TaskType} from "../../../App";
 import {Task} from "./Task";
+import {List} from "@mui/material";
 
 type TasksPropsType = {
     tasks: Array<TaskType>
@@ -21,11 +22,13 @@ export const Tasks: React.FC<TasksPropsType> = React.memo((props) => {
                                       removeTask={props.removeTask}
                                       renameTask={props.renameTask}
                                       changeIsDone={props.changeIsDone}
-        />),[props.tasks, props.renameTask, props.removeTask, props.changeIsDone])
+        />), [props.tasks, props.renameTask, props.removeTask, props.changeIsDone])
 
     return (
         <div className={s.body}>
-            {mappedTasks}
+            <List>
+                {mappedTasks}
+            </List>
         </div>
     )
 })

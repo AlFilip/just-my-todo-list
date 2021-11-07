@@ -8,6 +8,8 @@ import {allStateType} from "../../redux/store";
 import {removeTodoList, renameTodoList} from "../../actions/todoListActions";
 import {Dispatch} from "redux";
 import {addTaskAC, changeIsDoneAC, removeTaskAC, renameTaskAC} from "../../reducers/tasksReducer";
+import {Button, ButtonGroup} from "@mui/material";
+import {AddItemForm} from "../Common/AdditemForm/AddItemForm";
 
 type TodoListPropsType = {
     todoListId: string
@@ -70,11 +72,11 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     }
 
     const buttons = useMemo(() => ['All', 'Active', 'Completed']
-        .map(m => <button key={m}
-                          className={todoListFilter === m ? s.activeBtn : ''}
+        .map(m => <Button key={m}
+                          variant={todoListFilter === m ? 'contained' : 'outlined'}
                           data-filter={m}
                           onClick={changeFilter}>{m}
-            </button>
+            </Button>
         ), [todoListFilter]
     )
     return (
@@ -82,8 +84,8 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
             <TodoListTitle title={title}
                            callBack={removeTodo}
                            onChangeCallBack={changeTodoTitle}
-                           addTask={addTask}
             />
+            <AddItemForm callBack={addTask}/>
             <Tasks tasks={filteredTasks}
                    renameTask={renameTask}
                    changeIsDone={changeIsDone}
@@ -91,7 +93,9 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
             />
 
             <div className={s.filters}>
+                <ButtonGroup variant="outlined" size='small'>
                 {buttons}
+                </ButtonGroup>
             </div>
         </div>
     )

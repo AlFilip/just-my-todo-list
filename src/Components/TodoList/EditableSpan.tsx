@@ -1,4 +1,5 @@
 import React, {ChangeEventHandler, KeyboardEventHandler, useState} from "react";
+import {Input} from "@mui/material";
 
 type EditableSpanPropsType = {
     title: string
@@ -50,7 +51,7 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo(({
 
             {editMode
             && <>
-                <input autoFocus
+                <Input autoFocus
                        value={titleValue}
                        onKeyDown={onKeyDownHandler}
                        onChange={onTitleChangeHandler}
