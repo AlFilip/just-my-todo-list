@@ -2,7 +2,6 @@ import React, {MouseEventHandler, useCallback, useMemo, useState} from "react";
 import s from './TodoList.module.css'
 import {FilterValueType, TaskType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
-import {Tasks} from "./Tasks/Tasks";
 import {useDispatch, useSelector} from "react-redux";
 import {allStateType} from "../../redux/store";
 import {removeTodoList, renameTodoList} from "../../actions/todoListActions";
@@ -10,6 +9,7 @@ import {Dispatch} from "redux";
 import {addTaskAC, changeIsDoneAC, removeTaskAC, renameTaskAC} from "../../reducers/tasksReducer";
 import {Button, ButtonGroup} from "@mui/material";
 import {AddItemForm} from "../Common/AdditemForm/AddItemForm";
+import {AlternativeTasks} from "./Tasks/AlternativeTasks/AlternativeTasks";
 
 type TodoListPropsType = {
     todoListId: string
@@ -18,12 +18,12 @@ type TodoListPropsType = {
 }
 
 export const TodoList: React.FC<TodoListPropsType> = React.memo(({
-                                                          todoListId,
-                                                          title,
-                                                          filter,
-                                                          // tasks,
-                                                          ...props
-                                                      }) => {
+                                                                     todoListId,
+                                                                     title,
+                                                                     filter,
+                                                                     // tasks,
+                                                                     ...props
+                                                                 }) => {
     // console.log('TodoList')
     const dispatch = useDispatch<Dispatch>()
     const [todoListFilter, setTodoListFilter] = useState(filter)
@@ -85,16 +85,16 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
                            callBack={removeTodo}
                            onChangeCallBack={changeTodoTitle}
             />
-            <AddItemForm callBack={addTask}/>
-            <Tasks tasks={filteredTasks}
-                   renameTask={renameTask}
-                   changeIsDone={changeIsDone}
-                   removeTask={removeTask}
+            <AddItemForm callBack={addTask} placeHolder={'Enter new task name'}/>
+            <AlternativeTasks tasks={filteredTasks}
+                              renameTask={renameTask}
+                              changeIsDone={changeIsDone}
+                              removeTask={removeTask}
             />
 
             <div className={s.filters}>
                 <ButtonGroup variant="outlined" size='small'>
-                {buttons}
+                    {buttons}
                 </ButtonGroup>
             </div>
         </div>

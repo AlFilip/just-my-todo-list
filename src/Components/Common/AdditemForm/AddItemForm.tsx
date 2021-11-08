@@ -6,6 +6,9 @@ type EditableSpanPropsType = {
     callBack: (title: string) => void
     buttonTitle?: string
     isEditMode?: boolean
+    autoFocus?: boolean
+    discardOnBlur?: boolean
+    placeHolder?: string
 }
 export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
                                                                             title,
@@ -24,6 +27,8 @@ export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
     }
     const discardChanges = () => {
         setTitleValue(title || '')
+        title
+        && callBack(title)
     }
     const onKeyDownHandler: KeyboardEventHandler<HTMLInputElement> = (e) => {
         switch (e.key) {
@@ -39,15 +44,23 @@ export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
     const onTitleChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
         setTitleValue(e.currentTarget.value)
     }
+
+    const onBlurHandler = () => {
+        props.discardOnBlur
+        && discardChanges()
+    }
+
     return (
         <>
             <TextField color="secondary"
                        size={'small'}
                        variant="outlined"
-                       placeholder={'Enter here'}
+                       placeholder={props.placeHolder || 'Enter here'}
                        value={titleValue}
                        onKeyDown={onKeyDownHandler}
                        onChange={onTitleChangeHandler}
+                       autoFocus={props.autoFocus}
+                       onBlur={onBlurHandler}
             />
 
             {buttonTitle

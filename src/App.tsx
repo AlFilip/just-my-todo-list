@@ -1,12 +1,11 @@
 import React, {useCallback} from 'react';
 import './App.css';
 import {TodoList} from "./Components/TodoList/TodoList";
-import {EditableSpan} from "./Components/TodoList/EditableSpan";
 import {actionsTypes, addTodoList} from "./actions/todoListActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "redux";
 import {allStateType} from "./redux/store";
-import {AppBar, Box, Button, Container, Grid, IconButton, Menu, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography} from "@mui/material";
 import {AddItemForm} from "./Components/Common/AdditemForm/AddItemForm";
 
 
@@ -54,7 +53,8 @@ function App() {
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             News
                         </Typography>
-                        <AddItemForm callBack={addTodo} buttonTitle={'Add TodoList'}/>
+                        <AddItemForm callBack={addTodo} buttonTitle={'Add TodoList'}
+                                     placeHolder={'Enter new to-do list name'}/>
                         <Button color="inherit">Login</Button>
                     </Toolbar>
                 </AppBar>
