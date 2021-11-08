@@ -36,7 +36,7 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
         e.stopPropagation()
     }
     const [editMode, setEditMode] = useState(false)
-    const editIconOnClickHandler: MouseEventHandler<SVGSVGElement> = (e) => {
+    const editIconOnClickHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
         setEditMode(true)
         e.stopPropagation()
     }
@@ -47,8 +47,8 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
             key={id}
             secondaryAction={
                 !editMode
-                && <IconButton color="primary" size='small' onClick={killTask}>
-                    <Delete/>
+                && <IconButton color="primary" size='small'  onClick={killTask}>
+                    <Delete />
                 </IconButton>
             }
             disablePadding
@@ -73,8 +73,8 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
                 {/*<EditableSpan title={title}*/}
                 {/*              callBack={changeTitle}/>*/}
 
-                <IconButton edge="end" color="primary" size='small'>
-                    <EditIcon onClick={editIconOnClickHandler}/>
+                <IconButton edge="end" color="primary" size='small' onClick={editIconOnClickHandler}>
+                    <EditIcon />
                 </IconButton>
             </ListItemButton>
             }

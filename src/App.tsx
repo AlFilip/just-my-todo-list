@@ -1,12 +1,14 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {TodoList} from "./Components/TodoList/TodoList";
-import {actionsTypes, addTodoList} from "./actions/todoListActions";
+import {addTodoList} from "./actions/todoListActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "redux";
 import {allStateType} from "./redux/store";
 import {AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography} from "@mui/material";
 import {AddItemForm} from "./Components/Common/AdditemForm/AddItemForm";
+import {authApi} from "./Api/Api";
+import {authStateType, setAuthData} from "./reducers/authReducer";
 
 
 export type TaskType = { id: string, title: string, isDone: boolean }
@@ -20,8 +22,19 @@ export type TodoListType = { id: string, title: string, filter: FilterValueType 
 
 function App() {
     console.log('App')
-    const dispatch = useDispatch<Dispatch<actionsTypes>>()
+    const {isAuth, login} = useSelector<allStateType, authStateType>(state => state.auth)
     const todoLists = useSelector<allStateType, Array<TodoListType>>(state => state.todo)
+
+    const dispatch = useDispatch<Dispatch>()
+
+    useEffect(() => {
+        !isAuth
+        && authApi.me()
+            .then(data => {
+                data
+                && dispatch(setAuthData({...data, isAuth: true}))
+            })
+    }, [dispatch, isAuth])
 
     const addTodo = useCallback((title: string) => {
         dispatch(addTodoList({title}))
@@ -29,8 +42,7 @@ function App() {
 
     const mappedTodoLists = todoLists.map(m =>
         <Grid item key={m.id}>
-            <TodoList key={m.id}
-                      todoListId={m.id}
+            <TodoList todoListId={m.id}
                       filter={m.filter}
                       title={m.title}
 
@@ -55,7 +67,12 @@ function App() {
                         </Typography>
                         <AddItemForm callBack={addTodo} buttonTitle={'Add TodoList'}
                                      placeHolder={'Enter new to-do list name'}/>
-                        <Button color="inherit">Login</Button>
+                        {isAuth
+                            ? login
+                            : <Button color="inherit">
+                                Login
+                            </Button>
+                        }
                     </Toolbar>
                 </AppBar>
             </Box>
