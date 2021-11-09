@@ -1,11 +1,11 @@
 import React, {useMemo} from "react";
 import s from "../TodoList.module.css";
-import {TaskType} from "../../../App";
 import {Task} from "./Task";
 import {List} from "@mui/material";
+import {taskType} from "../../../reducers/tasksReducer";
 
 type TasksPropsType = {
-    tasks: Array<TaskType>
+    tasks: Array<taskType>
     removeTask: (taskId: string) => void
     renameTask: (taskId: string, title: string) => void
     changeIsDone: (taskId: string, isDone: boolean) => void

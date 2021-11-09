@@ -1,20 +1,13 @@
-import {TasksStateType} from "../App";
 import {v1} from "uuid";
-import {todoListId1, todoListId2} from "./todoListReducer";
 
-const initState: TasksStateType = {
-    [todoListId1]: [
-        {id: v1(), title: "HTML&CSS", isDone: true},
-        {id: v1(), title: "JS", isDone: true}
-    ],
-    [todoListId2]: [
-        {id: v1(), title: "Milk", isDone: true},
-        {id: v1(), title: "React Book", isDone: false}
-    ]
+export type taskType = { id: string, title: string, isDone: boolean }
+export type tasksStateType = {
+    [todoListId: string]: taskType[]
 }
+const initState: tasksStateType = {}
 
 
-const tasksReducer = (state = initState, action: TasksReducerActionTypes): TasksStateType => {
+const tasksReducer = (state = initState, action: TasksReducerActionTypes): tasksStateType => {
     switch (action.type) {
         case "ADD_TASK":
             return {

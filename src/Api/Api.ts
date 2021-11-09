@@ -1,12 +1,5 @@
-import {todoListId1, todoListId2} from "../reducers/todoListReducer";
-import {TodoListType} from "../App";
-import axios, {AxiosResponse} from "axios";
-import {throws} from "assert";
+import axios from "axios";
 
-const todoLists: Array<TodoListType> = [
-    {id: todoListId1, title: "What to learn", filter: "All"},
-    {id: todoListId2, title: "What to buy", filter: "All"}
-]
 
 const axiosReq = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',

@@ -1,34 +1,34 @@
 import React, {MouseEventHandler, useCallback, useMemo, useState} from "react";
 import s from './TodoList.module.css'
-import {FilterValueType, TaskType} from "../../App";
+import {filterValueType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
 import {useDispatch, useSelector} from "react-redux";
 import {allStateType} from "../../redux/store";
-import {removeTodoList, renameTodoList} from "../../actions/todoListActions";
 import {Dispatch} from "redux";
-import {addTaskAC, changeIsDoneAC, removeTaskAC, renameTaskAC} from "../../reducers/tasksReducer";
+import {addTaskAC, changeIsDoneAC, removeTaskAC, renameTaskAC, taskType} from "../../reducers/tasksReducer";
 import {Button, ButtonGroup} from "@mui/material";
 import {AddItemForm} from "../Common/AdditemForm/AddItemForm";
 import {AlternativeTasks} from "./Tasks/AlternativeTasks/AlternativeTasks";
 import {todoListApi} from "../../Api/Api";
+import {removeTodoFromState, renameTodoInState} from "../../reducers/todoListReducer";
 
 type TodoListPropsType = {
     todoListId: string
     title: string
-    filter: FilterValueType
+    // filter: FilterValueType
 }
 
 export const TodoList: React.FC<TodoListPropsType> = React.memo(({
                                                                      todoListId,
                                                                      title,
-                                                                     filter,
+                                                                     // filter,
                                                                      // tasks,
                                                                      ...props
                                                                  }) => {
     // console.log('TodoList')
     const dispatch = useDispatch<Dispatch>()
-    const [todoListFilter, setTodoListFilter] = useState(filter)
-    const tasks = useSelector<allStateType, TaskType[]>(state => state.tasks[todoListId])
+    const [todoListFilter, setTodoListFilter] = useState<filterValueType>('All')
+    const tasks = useSelector<allStateType, taskType[]>(state => state.tasks[todoListId])
     const filteredTasks = useMemo(() => {
         if (!tasks) return []
         switch (todoListFilter) {
@@ -43,11 +43,11 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     }, [tasks, todoListFilter])
 
     const removeTodo = useCallback(() => {
-        dispatch(removeTodoList({todoListId}))
+        dispatch(removeTodoFromState(todoListId))
     }, [dispatch, todoListId])
 
     const changeTodoTitle = useCallback((title: string) => {
-        dispatch(renameTodoList({todoListId, title}))
+        dispatch(renameTodoInState(todoListId, title))
     }, [dispatch, todoListId])
 
     const addTask = useCallback((title: string) => {
@@ -67,7 +67,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     }, [dispatch, todoListId])
 
     const changeFilter: MouseEventHandler<HTMLButtonElement> = (e) => {
-        const filterValue = e.currentTarget.dataset.filter as FilterValueType
+        const filterValue = e.currentTarget.dataset.filter as filterValueType
         filterValue
         && setTodoListFilter(filterValue)
     }

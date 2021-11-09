@@ -1,41 +1,54 @@
-import {TodoListType} from "../App";
-import {v1} from "uuid";
-import {actionsTypes, TODO_TYPES} from "../actions/todoListActions";
+enum ACTION_TYPES {
+    REMOVE_TODO_LIST = 'todoList/REMOVE_TODO_LIST',
+    ADD_TODO_LIST = 'todoList/ADD_TODO_LIST',
+    CHANGE_TODO_TITLE = 'todoList/CHANGE_TITLE',
+}
 
-export const [todoListId1, todoListId2] = [v1(), v1()]
-
-const initState: Array<TodoListType> = [
-    {id: todoListId1, title: "What to learn", filter: "All"},
-    {id: todoListId2, title: "What to buy", filter: "All"}
-]
-
-type newTodoType = {
+export type todoListType = {
     id: string
     title: string
     addedDate: string
     order: number
 }
-const todo:newTodoType[] = [
-    {
-        id: "cf7d62d0-a92a-4e85-8345-d905a53cf277",
-        title: "hjk",
-        addedDate: "2021-11-09T12:10:16.653",
-        order: -9
-    },
-]
+const initState: todoListType[] = []
 
-const todoListReducer = (state = initState, action: actionsTypes): Array<TodoListType> => {
+const todoListReducer = (state = initState, action: allTodoListReducerTypes): Array<todoListType> => {
     switch (action.type) {
-        case TODO_TYPES.ADD_TODO_LIST:
-            return [...state, {id: v1(), title: action.payload.title, filter: "All"}]
-        case TODO_TYPES.REMOVE_TODO_LIST:
-            return state.filter(f => f.id !== action.payload.todoListId)
-        case TODO_TYPES.CHANGE_TITLE:
-            const {todoListId, title} = action.payload
-            return state.map(m => m.id === todoListId ? {...m, title} : m)
+        case ACTION_TYPES.ADD_TODO_LIST:
+            return [...state, action.todo]
+        case ACTION_TYPES.REMOVE_TODO_LIST:
+            return state.filter(f => f.id !== action.id)
+        case ACTION_TYPES.CHANGE_TODO_TITLE:
+            return state.map(m => m.id === action.id ? {...m, title: action.title} : m)
         default:
             return state
     }
 }
+type allTodoListReducerTypes = addTodoToStateActionType
+    | removeTodoFromStateActionType
+    | renameTodoInStateActionType
+
+
+export const addTodoToState = (todo: todoListType) => ({
+    type: ACTION_TYPES.ADD_TODO_LIST, todo
+} as const)
+type addTodoToStateActionType = ReturnType<typeof addTodoToState>
+
+export const removeTodoFromState = (id: string) => ({
+    type: ACTION_TYPES.REMOVE_TODO_LIST,
+    id
+} as const)
+
+type removeTodoFromStateActionType = ReturnType<typeof removeTodoFromState>
+
+export const renameTodoInState = (id: string, title: string) => ({
+    type: ACTION_TYPES.CHANGE_TODO_TITLE,
+    id, title
+} as const)
+
+type renameTodoInStateActionType = ReturnType<typeof renameTodoInState>
+
+
+
 
 export default todoListReducer

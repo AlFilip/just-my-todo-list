@@ -1,10 +1,10 @@
 import React, {useMemo} from "react";
 import {List} from "@mui/material";
-import {TaskType} from "../../../../App";
 import {AlternativeTask} from "./AlternativeTask";
+import {taskType} from "../../../../reducers/tasksReducer";
 
 type AlternativeTasksPropsType = {
-    tasks: Array<TaskType>
+    tasks: Array<taskType>
     removeTask: (taskId: string) => void
     renameTask: (taskId: string, title: string) => void
     changeIsDone: (taskId: string, isDone: boolean) => void

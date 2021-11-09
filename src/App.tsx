@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {TodoList} from "./Components/TodoList/TodoList";
-import {addTodoList} from "./actions/todoListActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "redux";
 import {allStateType} from "./redux/store";
@@ -9,21 +8,16 @@ import {AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography} f
 import {AddItemForm} from "./Components/Common/AdditemForm/AddItemForm";
 import {authApi, todoListApi} from "./Api/Api";
 import {authStateType, setAuthData} from "./reducers/authReducer";
+import {todoListType} from "./reducers/todoListReducer";
 
 
-export type TaskType = { id: string, title: string, isDone: boolean }
+export type filterValueType = 'All' | 'Completed' | 'Active'
+// export type TodoListType = { id: string, title: string, filter: FilterValueType }
 
-export type TasksStateType = {
-    [todoListId: string]: TaskType[]
-}
-
-export type FilterValueType = 'All' | 'Completed' | 'Active'
-export type TodoListType = { id: string, title: string, filter: FilterValueType }
-
-function App() {
+function App(){
     console.log('App')
     const {isAuth, login} = useSelector<allStateType, authStateType>(state => state.auth)
-    const todoLists = useSelector<allStateType, Array<TodoListType>>(state => state.todo)
+    const todoLists = useSelector<allStateType, Array<todoListType>>(state => state.todo)
 
     const dispatch = useDispatch<Dispatch<any>>()
 
@@ -45,15 +39,13 @@ function App() {
     }, [dispatch, isAuth])
 
     const addTodo = useCallback((title: string) => {
-        dispatch(addTodoList(title))
+        // dispatch(addTodoList(title))
     }, [dispatch])
 
     const mappedTodoLists = todoLists.map(m =>
         <Grid item key={m.id}>
             <TodoList todoListId={m.id}
-                      filter={m.filter}
                       title={m.title}
-
             />
         </Grid>)
 
