@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {TodoList} from "./Components/TodoList/TodoList";
-import {addTodoList} from "./actions/todoListActions";
+import {addTodoListToState} from "./actions/todoListActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "redux";
 import {allStateType} from "./redux/store";
 import {AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography} from "@mui/material";
 import {AddItemForm} from "./Components/Common/AdditemForm/AddItemForm";
-import {authApi} from "./Api/Api";
+import {authApi, todoListApi} from "./Api/Api";
 import {authStateType, setAuthData} from "./reducers/authReducer";
 
 
@@ -37,7 +37,7 @@ function App() {
     }, [dispatch, isAuth])
 
     const addTodo = useCallback((title: string) => {
-        dispatch(addTodoList({title}))
+        dispatch(addTodoListToState({title}))
     }, [dispatch])
 
     const mappedTodoLists = todoLists.map(m =>

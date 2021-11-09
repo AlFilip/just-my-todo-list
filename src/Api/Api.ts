@@ -43,10 +43,15 @@ export const authApi = {
 
 export const todoListApi = {
     getTodoLists: () => {
-        return new Promise<Array<TodoListType>>((res, rej) => {
-            setTimeout(() => {
-                res(todoLists)
-            }, 200)
+        return axiosReq.get<authResType>('todo-lists')
+            .then(console.log)
+            .catch(console.log)
+    },
+    createTodoList: (title: string) => {
+        return axiosReq.post('todo-lists', {
+            title
         })
+            .then(console.log)
+            .catch(console.log)
     },
 }

@@ -24,6 +24,8 @@
 //     title
 // } as const)
 
+import {todoListApi} from "../Api/Api";
+
 export enum TODO_TYPES {
     REMOVE_TODO_LIST = 'todoList/REMOVE_TODO_LIST',
     ADD_TODO_LIST = 'todoList/ADD_TODO_LIST',
@@ -36,7 +38,13 @@ export const makeAction = <T extends TODO_TYPES, P>(type: T) => (payload: P) => 
 export const renameTodoList = makeAction<TODO_TYPES.CHANGE_TITLE, { todoListId: string, title: string }>(TODO_TYPES.CHANGE_TITLE)
 
 export const removeTodoList = makeAction<TODO_TYPES.REMOVE_TODO_LIST, { todoListId: string }>(TODO_TYPES.REMOVE_TODO_LIST)
-export const addTodoList =makeAction<TODO_TYPES.ADD_TODO_LIST, {title: string}>(TODO_TYPES.ADD_TODO_LIST)
+export const addTodoListToState =makeAction<TODO_TYPES.ADD_TODO_LIST, {title: string}>(TODO_TYPES.ADD_TODO_LIST)
+// export const addTodoList = (title: string) => (dispatch) => {
+//     todoListApi.createTodoList(title)
+//         .then(res => {
+//
+//         })
+// }
 
 interface IStringMap<T> {
     [key: string]: T
@@ -48,7 +56,7 @@ type IActionUnion<A extends IStringMap<IAnyFunction>> = ReturnType<A[keyof A]>
 const actions = {
     removeTodoList,
     renameTodoList,
-    addTodoList,
+    addTodoList: addTodoListToState,
 }
 export type actionsTypes = IActionUnion<typeof actions>
 
