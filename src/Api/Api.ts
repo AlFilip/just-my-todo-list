@@ -1,6 +1,7 @@
 import {todoListId1, todoListId2} from "../reducers/todoListReducer";
 import {TodoListType} from "../App";
 import axios, {AxiosResponse} from "axios";
+import {throws} from "assert";
 
 const todoLists: Array<TodoListType> = [
     {id: todoListId1, title: "What to learn", filter: "All"},
@@ -41,17 +42,77 @@ export const authApi = {
     }
 }
 
+type todoData = {
+    item: {
+        id: string
+        title: string
+        addedDate: string
+        order: number
+    }
+}
+type postTodoData = {
+    data: todoData
+    messages: any[]
+    fieldsErrors: any[]
+    resultCode: number
+}
+type postTodoType = {
+    data: {
+        data: postTodoData
+        status: number
+    }
+}
+
+
 export const todoListApi = {
     getTodoLists: () => {
-        return axiosReq.get<authResType>('todo-lists')
+        return axiosReq.get<todoData[]>('todo-lists')
             .then(console.log)
             .catch(console.log)
     },
-    createTodoList: (title: string) => {
-        return axiosReq.post('todo-lists', {
-            title
-        })
-            .then(console.log)
-            .catch(console.log)
-    },
+    // createTodoList: (title: string) => {
+    //     return axiosReq.post<postTodoType>('todo-lists', {
+    //         title
+    //     })
+    //         .then(res => res.data)
+    //         .catch(console.log)
+    // },
+    createTodoList: async (title: string) => {
+        const {status, data} = await axiosReq.post<postTodoType>('todo-lists', {title})
+        if (status === 200) {
+            debugger
+            const {data: {data: {data: {item}}}} = data
+            return item
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

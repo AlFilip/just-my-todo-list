@@ -1,7 +1,9 @@
-import {combineReducers, createStore} from "redux";
+import {applyMiddleware, combineReducers, createStore} from "redux";
 import todo from "../reducers/todoListReducer";
 import tasks from "../reducers/tasksReducer";
 import auth from "../reducers/authReducer";
+import thunk from "redux-thunk";
+
 
 const rootReducer = combineReducers({
     todo,
@@ -9,7 +11,8 @@ const rootReducer = combineReducers({
     auth
 })
 
-export const store = createStore(rootReducer)
+
+export const store = createStore(rootReducer, applyMiddleware(thunk))
 
 export type allStateType = ReturnType<typeof store.getState>
 

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {TodoList} from "./Components/TodoList/TodoList";
-import {addTodoListToState} from "./actions/todoListActions";
+import {addTodoList} from "./actions/todoListActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "redux";
 import {allStateType} from "./redux/store";
@@ -25,7 +25,7 @@ function App() {
     const {isAuth, login} = useSelector<allStateType, authStateType>(state => state.auth)
     const todoLists = useSelector<allStateType, Array<TodoListType>>(state => state.todo)
 
-    const dispatch = useDispatch<Dispatch>()
+    const dispatch = useDispatch<Dispatch<any>>()
 
     useEffect(() => {
         !isAuth
@@ -36,8 +36,16 @@ function App() {
             })
     }, [dispatch, isAuth])
 
+    useEffect(() => {
+        isAuth
+        && todoListApi.getTodoLists()
+            .then(res => {
+                debugger
+            })
+    }, [dispatch, isAuth])
+
     const addTodo = useCallback((title: string) => {
-        dispatch(addTodoListToState({title}))
+        dispatch(addTodoList(title))
     }, [dispatch])
 
     const mappedTodoLists = todoLists.map(m =>
