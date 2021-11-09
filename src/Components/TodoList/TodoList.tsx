@@ -1,16 +1,21 @@
-import React, {MouseEventHandler, useCallback, useMemo, useState} from "react";
+import React, {MouseEventHandler, useCallback, useEffect, useMemo, useState} from "react";
 import s from './TodoList.module.css'
 import {filterValueType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
 import {useDispatch, useSelector} from "react-redux";
 import {allStateType} from "../../redux/store";
-import {Dispatch} from "redux";
-import {addTaskAC, changeIsDoneAC, removeTaskAC, renameTaskAC, taskType} from "../../reducers/tasksReducer";
+import {
+    // changeTaskCompletedInState,
+    createTask, deleteTask,
+    initTasks,
+    removeTaskFromState,
+    // renameTaskInState,
+    taskType, updateTask
+} from "../../reducers/tasksReducer";
 import {Button, ButtonGroup} from "@mui/material";
 import {AddItemForm} from "../Common/AdditemForm/AddItemForm";
 import {AlternativeTasks} from "./Tasks/AlternativeTasks/AlternativeTasks";
-import {todoListApi} from "../../Api/Api";
-import {removeTodoFromState, renameTodoInState} from "../../reducers/todoListReducer";
+import {removeTodoList, renameTodoInState} from "../../reducers/todoListReducer";
 
 type TodoListPropsType = {
     todoListId: string
@@ -26,7 +31,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
                                                                      ...props
                                                                  }) => {
     // console.log('TodoList')
-    const dispatch = useDispatch<Dispatch>()
+    const dispatch = useDispatch()
     const [todoListFilter, setTodoListFilter] = useState<filterValueType>('All')
     const tasks = useSelector<allStateType, taskType[]>(state => state.tasks[todoListId])
     const filteredTasks = useMemo(() => {
@@ -36,14 +41,18 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
             default:
                 return tasks
             case "Active":
-                return tasks.filter(f => !f.isDone)
+                return tasks.filter(f => !f.completed)
             case "Completed":
-                return tasks.filter(f => f.isDone)
+                return tasks.filter(f => f.completed)
         }
     }, [tasks, todoListFilter])
 
+    useEffect(() => {
+        dispatch(initTasks(todoListId))
+    }, [])
+
     const removeTodo = useCallback(() => {
-        dispatch(removeTodoFromState(todoListId))
+        dispatch(removeTodoList(todoListId))
     }, [dispatch, todoListId])
 
     const changeTodoTitle = useCallback((title: string) => {
@@ -51,19 +60,24 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     }, [dispatch, todoListId])
 
     const addTask = useCallback((title: string) => {
-        dispatch(addTaskAC(todoListId, title))
+        dispatch(createTask(todoListId, title))
     }, [dispatch, todoListId])
 
     const removeTask = useCallback((taskId: string) => {
-        dispatch(removeTaskAC(todoListId, taskId))
+        dispatch(deleteTask(todoListId, taskId))
     }, [dispatch, todoListId])
 
     const renameTask = useCallback((taskId: string, title: string) => {
-        dispatch(renameTaskAC(todoListId, taskId, title))
+        // dispatch(renameTaskInState(todoListId, taskId, title))
     }, [dispatch, todoListId])
 
     const changeIsDone = useCallback((taskId: string, isDone: boolean) => {
-        dispatch(changeIsDoneAC(todoListId, taskId, isDone))
+        const task = filteredTasks.find(f => f.id === taskId)
+        debugger
+        if (task) {
+            task.completed = isDone
+            dispatch(updateTask(todoListId, task))
+        }
     }, [dispatch, todoListId])
 
     const changeFilter: MouseEventHandler<HTMLButtonElement> = (e) => {

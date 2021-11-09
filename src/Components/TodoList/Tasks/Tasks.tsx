@@ -18,7 +18,7 @@ export const Tasks: React.FC<TasksPropsType> = React.memo((props) => {
         && props.tasks.map(m => <Task key={m.id}
                                       title={m.title}
                                       id={m.id}
-                                      isDone={m.isDone}
+                                      isDone={m.completed}
                                       removeTask={props.removeTask}
                                       renameTask={props.renameTask}
                                       changeIsDone={props.changeIsDone}

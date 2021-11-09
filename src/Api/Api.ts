@@ -1,12 +1,22 @@
 import axios from "axios";
+import {todoListType} from "../reducers/todoListReducer";
+import {taskType} from "../reducers/tasksReducer";
 
-
-const axiosReq = axios.create({
-    baseURL: 'https://social-network.samuraijs.com/api/1.1/',
+const config = {
     withCredentials: true,
     headers: {
         'API-KEY': '8ac432b4-b12d-401e-8457-1e2c87c081fe'
     }
+}
+
+const axiosTodoReq = axios.create({
+    baseURL: 'https://social-network.samuraijs.com/api/1.1/todo-lists/',
+    ...config
+})
+
+const axiosAuthReq = axios.create({
+    baseURL: 'https://social-network.samuraijs.com/api/1.1/auth/',
+    ...config
 })
 
 export type resDataType = {
@@ -24,7 +34,7 @@ type authResType = {
 
 export const authApi = {
     me: () => {
-        return axiosReq.get<authResType>('auth/me')
+        return axiosAuthReq.get<authResType>('me')
             .then(res => {
                 if (res.status === 200) {
                     const {data, resultCode} = res.data
@@ -49,37 +59,85 @@ type postTodoData = {
     fieldsErrors: any[]
     resultCode: number
 }
-type postTodoType = {
-    data: {
-        data: postTodoData
-        status: number
-    }
+
+type delTodoType = {
+    resultCode: number
 }
 
 
 export const todoListApi = {
-    getTodoLists: () => {
-        return axiosReq.get<todoData[]>('todo-lists')
-            .then(console.log)
-            .catch(console.log)
+    getTodoLists: async () => {
+        const response = await axiosTodoReq.get<todoListType[]>('')
+        const {data, status} = response
+        if (status === 200) {
+            return data
+        }
     },
     // createTodoList: (title: string) => {
-    //     return axiosReq.post<postTodoType>('todo-lists', {
+    //     return axiosTodoReq.post<postTodoType>('todo-lists', {
     //         title
     //     })
     //         .then(res => res.data)
     //         .catch(console.log)
     // },
     createTodoList: async (title: string) => {
-        const {status, data} = await axiosReq.post<postTodoType>('todo-lists', {title})
-        if (status === 200) {
-            debugger
-            const {data: {data: {data: {item}}}} = data
-            return item
+        const {status, data, data: {resultCode, messages}} = await axiosTodoReq.post<postTodoData>('', {title})
+        if (status === 200 && resultCode === 0) {
+            return data.data.item
+        }
+        alert(messages[0])
+    },
+    removeTodoList: async (id: string) => {
+        const response = await axiosTodoReq.delete<delTodoType>(`${id}`)
+        if (response.status === 200) {
+            return true
         }
     }
 }
 
+
+type getTasksResponseType = {
+    items: taskType[]
+    totalCount: number
+    error: null | string
+}
+type postTaskType = {
+    data: { item: taskType }
+    messages: any[]
+    resultCode: number
+}
+type deleteTaskType = {
+    status: number
+    resultCode: number
+    messages: any[]
+}
+
+export const tasksApi = {
+    getTasks: async (todoListId: string) => {
+        const {data, status} = await axiosTodoReq.get<getTasksResponseType>(`/${todoListId}/tasks`)
+        const {items, error} = data
+        if (status === 200 && !error) {
+            return items
+        }
+        console.log(error)
+    },
+    addTask: async (todoListId: string, title: string) => {
+        const {status, data: {data: {item}, resultCode, messages}} = await axiosTodoReq.post<postTaskType>(`${todoListId}/tasks`, {title})
+        if (status === 200 && resultCode === 0) {
+            return item
+        }
+        alert(messages[0])
+    },
+    deleteTask: async (todoListId: string, taskId: string) => {
+        const {status, data:  {resultCode, messages}} = await axiosTodoReq.delete<deleteTaskType>(`${todoListId}/tasks/${taskId}`)
+        return status === 200 && resultCode === 0
+        console.log(messages[0]);
+    },
+    updateTask: async (todoListId:string, task:taskType) => {
+        const req = await axiosTodoReq.put(`${todoListId}/tasks/${task.id}`, {task})
+        debugger
+    }
+}
 
 
 

@@ -6,15 +6,16 @@ import {Dispatch} from "redux";
 import {allStateType} from "./redux/store";
 import {AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography} from "@mui/material";
 import {AddItemForm} from "./Components/Common/AdditemForm/AddItemForm";
-import {authApi, todoListApi} from "./Api/Api";
+import {authApi} from "./Api/Api";
 import {authStateType, setAuthData} from "./reducers/authReducer";
-import {todoListType} from "./reducers/todoListReducer";
+import {addTodoList, initTodoLists, todoListType} from "./reducers/todoListReducer";
 
 
 export type filterValueType = 'All' | 'Completed' | 'Active'
+
 // export type TodoListType = { id: string, title: string, filter: FilterValueType }
 
-function App(){
+function App() {
     console.log('App')
     const {isAuth, login} = useSelector<allStateType, authStateType>(state => state.auth)
     const todoLists = useSelector<allStateType, Array<todoListType>>(state => state.todo)
@@ -32,14 +33,11 @@ function App(){
 
     useEffect(() => {
         isAuth
-        && todoListApi.getTodoLists()
-            .then(res => {
-                debugger
-            })
+        && dispatch(initTodoLists())
     }, [dispatch, isAuth])
 
     const addTodo = useCallback((title: string) => {
-        // dispatch(addTodoList(title))
+        dispatch(addTodoList(title))
     }, [dispatch])
 
     const mappedTodoLists = todoLists.map(m =>

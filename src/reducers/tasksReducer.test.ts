@@ -1,5 +1,5 @@
 import {v1} from "uuid";
-import {addTaskAC, changeIsDoneAC, removeTaskAC, renameTaskAC, tasksReducer} from "./tasksReducer";
+import {addTaskAC, changeTaskCompletedInState, removeTaskFromState, renameTaskInState, tasksReducer} from "./tasksReducer";
 
 const [todoListId1, todoListId2] = [v1(), v1()]
 const startState = {
@@ -23,7 +23,7 @@ test('Adding task test', () => {
 })
 
 test('Remove task test', () => {
-    const action = removeTaskAC(todoListId1, '1')
+    const action = removeTaskFromState(todoListId1, '1')
 
     const endState = tasksReducer(startState, action)
 
@@ -34,7 +34,7 @@ test('Remove task test', () => {
 })
 
 test('Rename task test', () => {
-    const action = renameTaskAC(todoListId1, '1', 'title')
+    const action = renameTaskInState(todoListId1, '1', 'title')
 
     const endState = tasksReducer(startState, action)
 
@@ -46,7 +46,7 @@ test('Rename task test', () => {
 })
 
 test('Changing task status test', () => {
-    const action = changeIsDoneAC(todoListId1, '1', false)
+    const action = changeTaskCompletedInState(todoListId1, '1', false)
 
     const endState = tasksReducer(startState, action)
 

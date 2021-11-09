@@ -17,7 +17,7 @@ export const AlternativeTasks: React.FC<AlternativeTasksPropsType> = React.memo(
         && props.tasks.map(m => <AlternativeTask key={m.id}
                                                  title={m.title}
                                                  id={m.id}
-                                                 isDone={m.isDone}
+                                                 isDone={m.completed}
                                                  removeTask={props.removeTask}
                                                  renameTask={props.renameTask}
                                                  changeIsDone={props.changeIsDone}
