@@ -7,7 +7,7 @@ type AlternativeTasksPropsType = {
     tasks: Array<taskType>
     removeTask: (taskId: string) => void
     renameTask: (taskId: string, title: string) => void
-    changeIsDone: (taskId: string, isDone: boolean) => void
+    changeIsDone: (taskId: string) => void
 }
 
 export const AlternativeTasks: React.FC<AlternativeTasksPropsType> = React.memo((props) => {
@@ -17,7 +17,7 @@ export const AlternativeTasks: React.FC<AlternativeTasksPropsType> = React.memo(
         && props.tasks.map(m => <AlternativeTask key={m.id}
                                                  title={m.title}
                                                  id={m.id}
-                                                 isDone={m.completed}
+                                                 completed={m.completed}
                                                  removeTask={props.removeTask}
                                                  renameTask={props.renameTask}
                                                  changeIsDone={props.changeIsDone}

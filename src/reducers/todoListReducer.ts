@@ -93,5 +93,12 @@ export const removeTodoList = (id: string): thunkType => (dispatch) => {
         })
 }
 
+export const updateTodoTitle = (todoListId: string, title: string):thunkType => (dispatch) => {
+    todoListApi.updateTodoTitle(todoListId, title)
+        .then(success => {
+            success
+            && dispatch(renameTodoInState(todoListId, title))
+        })
+}
 
 export default todoListReducer

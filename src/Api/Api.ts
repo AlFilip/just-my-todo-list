@@ -63,6 +63,9 @@ type postTodoData = {
 type delTodoType = {
     resultCode: number
 }
+type putTodoType = {
+    resultCode: number
+}
 
 
 export const todoListApi = {
@@ -73,13 +76,6 @@ export const todoListApi = {
             return data
         }
     },
-    // createTodoList: (title: string) => {
-    //     return axiosTodoReq.post<postTodoType>('todo-lists', {
-    //         title
-    //     })
-    //         .then(res => res.data)
-    //         .catch(console.log)
-    // },
     createTodoList: async (title: string) => {
         const {status, data, data: {resultCode, messages}} = await axiosTodoReq.post<postTodoData>('', {title})
         if (status === 200 && resultCode === 0) {
@@ -92,8 +88,14 @@ export const todoListApi = {
         if (response.status === 200) {
             return true
         }
+    },
+    updateTodoTitle: async (todoListId: string, title: string) => {
+        const {status, data: {resultCode}} = await axiosTodoReq.put<putTodoType>(`${todoListId}`, {title})
+        return status === 200 && resultCode === 0
     }
 }
+
+
 
 
 type getTasksResponseType = {
@@ -107,6 +109,11 @@ type postTaskType = {
     resultCode: number
 }
 type deleteTaskType = {
+    status: number
+    resultCode: number
+    messages: any[]
+}
+type putTaskType = {
     status: number
     resultCode: number
     messages: any[]
@@ -129,13 +136,14 @@ export const tasksApi = {
         alert(messages[0])
     },
     deleteTask: async (todoListId: string, taskId: string) => {
-        const {status, data:  {resultCode, messages}} = await axiosTodoReq.delete<deleteTaskType>(`${todoListId}/tasks/${taskId}`)
+        const {status, data: {resultCode, messages}} = await axiosTodoReq.delete<deleteTaskType>(`${todoListId}/tasks/${taskId}`)
         return status === 200 && resultCode === 0
         console.log(messages[0]);
     },
-    updateTask: async (todoListId:string, task:taskType) => {
-        const req = await axiosTodoReq.put(`${todoListId}/tasks/${task.id}`, {task})
-        debugger
+    updateTask: async (todoListId: string, task: taskType) => {
+        const {status, data: {resultCode, messages}} = await axiosTodoReq.put<putTaskType>(`${todoListId}/tasks/${task.id}`, {...task})
+        return status === 200 && resultCode === 0
+        console.log(messages[0])
     }
 }
 

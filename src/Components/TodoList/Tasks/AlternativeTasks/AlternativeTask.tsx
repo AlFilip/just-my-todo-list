@@ -9,16 +9,16 @@ import {AddItemForm} from "../../../Common/AdditemForm/AddItemForm";
 export type TaskPropsType = {
     id: string
     title: string
-    isDone: boolean
+    completed: boolean
     removeTask: (taskId: string) => void
     renameTask: (taskId: string, title: string) => void
-    changeIsDone: (taskId: string, isDone: boolean) => void
+    changeIsDone: (taskId: string) => void
 }
 
 export const AlternativeTask: React.FC<TaskPropsType> = ({
                                                              id,
                                                              title,
-                                                             isDone,
+                                                             completed,
                                                              removeTask,
                                                              renameTask,
                                                              changeIsDone,
@@ -29,7 +29,7 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
         renameTask(id, title)
         setEditMode(false)
     }, [id, renameTask])
-    const onChangeCheckedHandler = () => changeIsDone(id, !isDone)
+    const onChangeCheckedHandler = () => changeIsDone(id)
 
     const killTask: MouseEventHandler<HTMLButtonElement> = (e) => {
         removeTask(id)
@@ -67,7 +67,7 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
 
 
                 <ListItemIcon sx={{minWidth: '36px'}}>
-                    <Checkbox checked={isDone} sx={{padding: 0}}/>
+                    <Checkbox checked={!!completed} sx={{padding: 0}}/>
                 </ListItemIcon>
                 <ListItemText primary={title}/>
                 {/*<EditableSpan title={title}*/}

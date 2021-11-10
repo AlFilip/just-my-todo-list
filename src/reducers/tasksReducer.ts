@@ -1,5 +1,5 @@
 import {thunkType} from "./todoListReducer";
-import {tasksApi, todoListApi} from "../Api/Api";
+import {tasksApi} from "../Api/Api";
 
 enum ACTION_TYPES {
     REMOVE_TASK = 'todoList/REMOVE_TASK',
@@ -38,7 +38,7 @@ const tasksReducer = (state = initState, action: allTasksReducerActionTypes): ta
         case ACTION_TYPES.INIT_TASKS:
             return {
                 ...state,
-                [action.todoListId]: action.tasks
+                [action.todoListId]: action.tasks.sort((a, b) => b.order - a.order)
             }
         case ACTION_TYPES.REMOVE_TASK:
             return {
@@ -115,7 +115,8 @@ export const deleteTask = (todoListId: string, taskId: string): thunkType => (di
 export const updateTask = (todoListId: string, task: taskType): thunkType => (dispatch) => {
     tasksApi.updateTask(todoListId, task)
         .then(res => {
-            debugger
+            res &&
+            dispatch(updateTaskInState(todoListId, task))
         })
 }
 

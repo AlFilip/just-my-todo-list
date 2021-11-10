@@ -4,18 +4,11 @@ import {filterValueType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
 import {useDispatch, useSelector} from "react-redux";
 import {allStateType} from "../../redux/store";
-import {
-    // changeTaskCompletedInState,
-    createTask, deleteTask,
-    initTasks,
-    removeTaskFromState,
-    // renameTaskInState,
-    taskType, updateTask
-} from "../../reducers/tasksReducer";
+import {createTask, deleteTask, initTasks, taskType, updateTask} from "../../reducers/tasksReducer";
 import {Button, ButtonGroup} from "@mui/material";
 import {AddItemForm} from "../Common/AdditemForm/AddItemForm";
 import {AlternativeTasks} from "./Tasks/AlternativeTasks/AlternativeTasks";
-import {removeTodoList, renameTodoInState} from "../../reducers/todoListReducer";
+import {removeTodoList, updateTodoTitle} from "../../reducers/todoListReducer";
 
 type TodoListPropsType = {
     todoListId: string
@@ -56,7 +49,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     }, [dispatch, todoListId])
 
     const changeTodoTitle = useCallback((title: string) => {
-        dispatch(renameTodoInState(todoListId, title))
+        dispatch(updateTodoTitle(todoListId, title))
     }, [dispatch, todoListId])
 
     const addTask = useCallback((title: string) => {
@@ -69,16 +62,23 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
 
     const renameTask = useCallback((taskId: string, title: string) => {
         // dispatch(renameTaskInState(todoListId, taskId, title))
-    }, [dispatch, todoListId])
-
-    const changeIsDone = useCallback((taskId: string, isDone: boolean) => {
-        const task = filteredTasks.find(f => f.id === taskId)
         debugger
+        const task = filteredTasks.find(f => {
+            return f.id === taskId
+        })
         if (task) {
-            task.completed = isDone
-            dispatch(updateTask(todoListId, task))
+            dispatch(updateTask(todoListId, {...task, title}))
         }
-    }, [dispatch, todoListId])
+    }, [dispatch, todoListId, filteredTasks])
+
+    const changeIsDone = useCallback((taskId: string) => {
+        const task = filteredTasks.find(f => {
+            return f.id === taskId
+        })
+        if (task) {
+            dispatch(updateTask(todoListId, {...task, completed: !task.completed}))
+        }
+    }, [dispatch, todoListId, filteredTasks])
 
     const changeFilter: MouseEventHandler<HTMLButtonElement> = (e) => {
         const filterValue = e.currentTarget.dataset.filter as filterValueType
