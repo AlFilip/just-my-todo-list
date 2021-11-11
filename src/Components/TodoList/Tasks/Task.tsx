@@ -7,7 +7,7 @@ import s from './Task.module.css'
 export type TaskPropsType = {
     id: string
     title: string
-    isDone: boolean
+    completed: boolean | undefined
     removeTask: (taskId: string) => void
     renameTask: (taskId: string, title: string) => void
     changeIsDone: (taskId: string, isDone: boolean) => void
@@ -16,7 +16,7 @@ export type TaskPropsType = {
 export const Task: React.FC<TaskPropsType> = ({
                                                   id,
                                                   title,
-                                                  isDone,
+                                                  completed,
                                                   removeTask,
                                                   renameTask,
                                                   changeIsDone,
@@ -33,7 +33,7 @@ export const Task: React.FC<TaskPropsType> = ({
         <ListItemButton key={id} id={id}>
             <div className={s.listContainer}>
                 <div>
-                    <Checkbox checked={isDone} onChange={onChangeCheckedHandler}/>
+                    <Checkbox checked={!!completed} onChange={onChangeCheckedHandler}/>
                     <EditableSpan title={title}
                                   callBack={changeTitle}
                     />

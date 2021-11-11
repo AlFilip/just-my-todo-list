@@ -9,7 +9,7 @@ import {AddItemForm} from "../../../Common/AdditemForm/AddItemForm";
 export type TaskPropsType = {
     id: string
     title: string
-    completed: boolean
+    completed: boolean | undefined
     removeTask: (taskId: string) => void
     renameTask: (taskId: string, title: string) => void
     changeIsDone: (taskId: string) => void
@@ -47,37 +47,33 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
             key={id}
             secondaryAction={
                 !editMode
-                && <IconButton color="primary" size='small'  onClick={killTask}>
-                    <Delete />
+                && <IconButton color="primary" size='small' onClick={killTask}>
+                    <Delete/>
                 </IconButton>
             }
             disablePadding
             disableGutters
         >
-            {
-                editMode
-                && <AddItemForm callBack={changeTitle} title={title}
-                                autoFocus
-                                discardOnBlur
-                                placeHolder={'Enter new task name'}
-                />
-            }
-            {!editMode &&
-            <ListItemButton key={id} id={id} onClick={onChangeCheckedHandler}>
-
+            {editMode
+            && <AddItemForm callBack={changeTitle} title={title}
+                            autoFocus
+                            discardOnBlur
+                            placeHolder={'Enter new task name'}
+            />}
+            {!editMode
+            && <ListItemButton key={id} id={id} onClick={onChangeCheckedHandler}>
 
                 <ListItemIcon sx={{minWidth: '36px'}}>
                     <Checkbox checked={!!completed} sx={{padding: 0}}/>
                 </ListItemIcon>
+
                 <ListItemText primary={title}/>
-                {/*<EditableSpan title={title}*/}
-                {/*              callBack={changeTitle}/>*/}
 
                 <IconButton edge="end" color="primary" size='small' onClick={editIconOnClickHandler}>
-                    <EditIcon />
+                    <EditIcon/>
                 </IconButton>
-            </ListItemButton>
-            }
+
+            </ListItemButton>}
         </ListItem>
     )
 }

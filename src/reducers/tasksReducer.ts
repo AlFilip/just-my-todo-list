@@ -11,7 +11,7 @@ enum ACTION_TYPES {
 export type taskType = {
     description: string | null
     title: string
-    completed: boolean
+    completed: boolean | undefined
     status: number
     priority: number
     startDate: string | null

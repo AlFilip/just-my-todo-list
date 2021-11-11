@@ -137,13 +137,17 @@ export const tasksApi = {
     },
     deleteTask: async (todoListId: string, taskId: string) => {
         const {status, data: {resultCode, messages}} = await axiosTodoReq.delete<deleteTaskType>(`${todoListId}/tasks/${taskId}`)
-        return status === 200 && resultCode === 0
-        console.log(messages[0]);
+        if (status === 200 && resultCode === 0){
+            return true
+        }
+        alert(messages[0]);
     },
     updateTask: async (todoListId: string, task: taskType) => {
         const {status, data: {resultCode, messages}} = await axiosTodoReq.put<putTaskType>(`${todoListId}/tasks/${task.id}`, {...task})
-        return status === 200 && resultCode === 0
-        console.log(messages[0])
+        if (status === 200 && resultCode === 0){
+            return true
+        }
+        alert(messages[0])
     }
 }
 

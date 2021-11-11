@@ -42,7 +42,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
 
     useEffect(() => {
         dispatch(initTasks(todoListId))
-    }, [])
+    }, [dispatch, todoListId])
 
     const removeTodo = useCallback(() => {
         dispatch(removeTodoList(todoListId))
@@ -61,8 +61,6 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({
     }, [dispatch, todoListId])
 
     const renameTask = useCallback((taskId: string, title: string) => {
-        // dispatch(renameTaskInState(todoListId, taskId, title))
-        debugger
         const task = filteredTasks.find(f => {
             return f.id === taskId
         })
