@@ -19,22 +19,24 @@ const axiosAuthReq = axios.create({
     ...config
 })
 
-export type resDataType = {
+
+type commonResponseType<T = {}> = {
+    data: T
+    status: number
+    resultCode: number
+    messages: string[]
+    fieldsErrors: any[]
+}
+
+export type authMeDataType = {
     "id": number
     "login": string
     "email": string
 }
 
-type authResType = {
-    data: resDataType
-    messages: any[]
-    fieldsErrors: any[]
-    resultCode: number
-}
-
 export const authApi = {
     me: () => {
-        return axiosAuthReq.get<authResType>('me')
+        return axiosAuthReq.get<commonResponseType<authMeDataType>>('me')
             .then(res => {
                 if (res.status === 200) {
                     const {data, resultCode} = res.data
@@ -42,29 +44,16 @@ export const authApi = {
                 }
             })
             .catch(console.log)
-    }
+    },
 }
 
-type todoData = {
+type todoDataType = {
     item: {
         id: string
         title: string
         addedDate: string
         order: number
     }
-}
-type postTodoData = {
-    data: todoData
-    messages: any[]
-    fieldsErrors: any[]
-    resultCode: number
-}
-
-type delTodoType = {
-    resultCode: number
-}
-type putTodoType = {
-    resultCode: number
 }
 
 
@@ -77,46 +66,31 @@ export const todoListApi = {
         }
     },
     createTodoList: async (title: string) => {
-        const {status, data, data: {resultCode, messages}} = await axiosTodoReq.post<postTodoData>('', {title})
+        const {status, data, data: {resultCode, messages}} = await
+            axiosTodoReq.post<commonResponseType<todoDataType>>('', title)
         if (status === 200 && resultCode === 0) {
             return data.data.item
         }
         alert(messages[0])
     },
     removeTodoList: async (id: string) => {
-        const response = await axiosTodoReq.delete<delTodoType>(`${id}`)
+        const response = await axiosTodoReq.delete<commonResponseType>(`${id}`)
         if (response.status === 200) {
             return true
         }
     },
     updateTodoTitle: async (todoListId: string, title: string) => {
-        const {status, data: {resultCode}} = await axiosTodoReq.put<putTodoType>(`${todoListId}`, {title})
+        const {status, data: {resultCode}} = await axiosTodoReq.put<commonResponseType>(`${todoListId}`, {title})
         return status === 200 && resultCode === 0
     }
 }
-
-
 
 
 type getTasksResponseType = {
     items: taskType[]
     totalCount: number
     error: null | string
-}
-type postTaskType = {
-    data: { item: taskType }
-    messages: any[]
-    resultCode: number
-}
-type deleteTaskType = {
-    status: number
-    resultCode: number
-    messages: any[]
-}
-type putTaskType = {
-    status: number
-    resultCode: number
-    messages: any[]
+    fieldsErrors: any[]
 }
 
 export const tasksApi = {
@@ -129,22 +103,25 @@ export const tasksApi = {
         console.log(error)
     },
     addTask: async (todoListId: string, title: string) => {
-        const {status, data: {data: {item}, resultCode, messages}} = await axiosTodoReq.post<postTaskType>(`${todoListId}/tasks`, {title})
+        const {status, data: {data: {item}, resultCode, messages}} = await
+            axiosTodoReq.post<commonResponseType<{ item: taskType }>>(`${todoListId}/tasks`, {title})
         if (status === 200 && resultCode === 0) {
             return item
         }
         alert(messages[0])
     },
     deleteTask: async (todoListId: string, taskId: string) => {
-        const {status, data: {resultCode, messages}} = await axiosTodoReq.delete<deleteTaskType>(`${todoListId}/tasks/${taskId}`)
-        if (status === 200 && resultCode === 0){
+        const {status, data: {resultCode, messages}} = await
+            axiosTodoReq.delete<commonResponseType>(`${todoListId}/tasks/${taskId}`)
+        if (status === 200 && resultCode === 0) {
             return true
         }
         alert(messages[0]);
     },
     updateTask: async (todoListId: string, task: taskType) => {
-        const {status, data: {resultCode, messages}} = await axiosTodoReq.put<putTaskType>(`${todoListId}/tasks/${task.id}`, {...task})
-        if (status === 200 && resultCode === 0){
+        const {status, data: {resultCode, messages}} = await
+            axiosTodoReq.put<commonResponseType>(`${todoListId}/tasks/${task.id}`, task)
+        if (status === 200 && resultCode === 0) {
             return true
         }
         alert(messages[0])
