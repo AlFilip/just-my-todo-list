@@ -1,6 +1,5 @@
 import React, {MouseEventHandler, useCallback, useEffect, useMemo, useState} from "react";
 import s from './TodoList.module.css'
-import {filterValueType} from "../../App";
 import {TodoListTitle} from "./TodoListTitle";
 import {useDispatch, useSelector} from "react-redux";
 import {allStateType} from "../../redux/store";
@@ -8,13 +7,14 @@ import {createTask, deleteTask, initTasks, taskType, updateTask} from "../../red
 import {Button, ButtonGroup} from "@mui/material";
 import {AddItemForm} from "../Common/AdditemForm/AddItemForm";
 import {AlternativeTasks} from "./Tasks/AlternativeTasks/AlternativeTasks";
-import {removeTodoList, updateTodoTitle} from "../../reducers/todoListReducer";
+import {  removeTodoList, updateTodoTitle } from "../../reducers/todoListReducer"
 
 type TodoListPropsType = {
     todoListId: string
     title: string
-    // filter: FilterValueType
+    // filter: filterValueType
 }
+export type filterValueType = 'All' | 'Completed' | 'Active'
 
 export const TodoList: React.FC<TodoListPropsType> = React.memo(({
                                                                      todoListId,

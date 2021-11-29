@@ -1,5 +1,5 @@
-import {thunkType} from "./todoListReducer";
-import {tasksApi} from "../Api/Api";
+import { tasksApi } from "../Api/Api"
+import { thunkType } from '../redux/store'
 
 
 export type taskType = {
@@ -27,22 +27,22 @@ const tasksReducer = (state = initState, action: allTasksReducerActionTypes): ta
         case 'TASKS/ADD_TASK':
             return {
                 ...state,
-                [action.todoListId]: [...state[action.todoListId], action.task]
+                [action.todoListId]: [...state[action.todoListId], action.task],
             }
         case 'TASKS/INIT_TASKS':
             return {
                 ...state,
-                [action.todoListId]: action.tasks.sort((a, b) => b.order - a.order)
+                [action.todoListId]: action.tasks.sort( (a, b) => b.order - a.order ),
             }
         case 'TASKS/REMOVE_TASK':
             return {
                 ...state,
-                [action.todoListId]: state[action.todoListId].filter(f => f.id !== action.taskId)
+                [action.todoListId]: state[action.todoListId].filter( f => f.id !== action.taskId ),
             }
         case 'TASKS/UPDATE_TASK':
             return {
                 ...state,
-                [action.todoListId]: state[action.todoListId].map(m => m.id === action.task.id ? action.task : m)
+                [action.todoListId]: state[action.todoListId].map( m => m.id === action.task.id ? action.task : m ),
             }
         default:
             return state
@@ -55,63 +55,63 @@ export type allTasksReducerActionTypes = addTaskToStateActionType
     | setTasksToStateActionType
 
 type addTaskToStateActionType = ReturnType<typeof addTaskToState>
-export const addTaskToState = (todoListId: string, task: taskType) => ({
+export const addTaskToState = (todoListId: string, task: taskType) => ( {
     type: 'TASKS/ADD_TASK',
     todoListId,
-    task
-} as const)
+    task,
+} as const )
 
 type removeTaskFromStateActionType = ReturnType<typeof removeTaskFromState>
-export const removeTaskFromState = (todoListId: string, taskId: string) => ({
+export const removeTaskFromState = (todoListId: string, taskId: string) => ( {
     type: 'TASKS/REMOVE_TASK',
     todoListId,
-    taskId
-} as const)
+    taskId,
+} as const )
 
 type updateTaskInStateActionType = ReturnType<typeof updateTaskInState>
-export const updateTaskInState = (todoListId: string, task: taskType) => ({
+export const updateTaskInState = (todoListId: string, task: taskType) => ( {
     type: 'TASKS/UPDATE_TASK',
     todoListId,
-    task
-} as const)
+    task,
+} as const )
 
 type setTasksToStateActionType = ReturnType<typeof setTasksToState>
-export const setTasksToState = (todoListId: string, tasks: taskType[]) => ({
+export const setTasksToState = (todoListId: string, tasks: taskType[]) => ( {
     type: 'TASKS/INIT_TASKS',
     todoListId,
-    tasks
-} as const)
+    tasks,
+} as const )
 
 export const initTasks = (todoListId: string): thunkType => (dispatch) => {
-    tasksApi.getTasks(todoListId)
-        .then(tasks => {
+    tasksApi.getTasks( todoListId )
+        .then( tasks => {
             tasks
-            && dispatch(setTasksToState(todoListId, tasks))
-        })
+            && dispatch( setTasksToState( todoListId, tasks ) )
+        } )
 }
 
 export const createTask = (todoListId: string, title: string): thunkType => (dispatch) => {
-    tasksApi.addTask(todoListId, title)
-        .then(task => {
+    tasksApi.addTask( todoListId, title )
+        .then( task => {
             task
-            && dispatch(addTaskToState(todoListId, task))
-        })
+            && dispatch( addTaskToState( todoListId, task ) )
+        } )
 }
 
 export const deleteTask = (todoListId: string, taskId: string): thunkType => (dispatch) => {
-    tasksApi.deleteTask(todoListId, taskId)
-        .then(isRemoved => {
+    tasksApi.deleteTask( todoListId, taskId )
+        .then( isRemoved => {
             isRemoved
-            && dispatch(removeTaskFromState(todoListId, taskId))
-        })
+            && dispatch( removeTaskFromState( todoListId, taskId ) )
+        } )
 }
 
 export const updateTask = (todoListId: string, task: taskType): thunkType => (dispatch) => {
-    tasksApi.updateTask(todoListId, task)
-        .then(res => {
+    tasksApi.updateTask( todoListId, task )
+        .then( res => {
             res &&
-            dispatch(updateTaskInState(todoListId, task))
-        })
+            dispatch( updateTaskInState( todoListId, task ) )
+        } )
 }
 
 export default tasksReducer

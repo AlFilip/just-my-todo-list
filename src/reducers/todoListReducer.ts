@@ -1,11 +1,7 @@
-import {todoListApi} from "../Api/Api";
-import {ThunkAction} from "redux-thunk";
-import {allStateType} from "../redux/store";
-import {allTasksReducerActionTypes} from "./tasksReducer";
+import { todoListApi } from "../Api/Api"
+import { thunkType } from '../redux/store'
 
-export type thunkType = ThunkAction<any, allStateType, any, allActionTypes>
 
-type allActionTypes = allTodoListReducerActionTypes | allTasksReducerActionTypes
 
 export type todoListType = {
     id: string
@@ -13,85 +9,89 @@ export type todoListType = {
     addedDate: string
     order: number
 }
+
+
 const initState: todoListType[] = []
 
-const todoListReducer = (state = initState, action: allTodoListReducerActionTypes): Array<todoListType> => {
+const todoListReducer = (state = initState, action: allTodoListReducerActionTypes): todoListType[] => {
     switch (action.type) {
         case 'TODO/ADD_TODO_LIST':
-            return [...state, action.todo]
+            return [...state, { ...action.todo}]
         case 'TODO/REMOVE_TODO_LIST':
-            return state.filter(f => f.id !== action.id)
+            return state.filter( f => f.id !== action.id )
         case 'TODO/CHANGE_TODO_TITLE':
-            return state.map(m => m.id === action.id ? {...m, title: action.title} : m)
+            return state.map( m => m.id === action.id ? { ...m, title: action.title } : m )
         case 'TODO/INIT_TODO':
-            return action.items.sort((a, b) => b.order - a.order)
+            return action.items
         default:
             return state
     }
 }
-type allTodoListReducerActionTypes = addTodoToStateActionType
+export type allTodoListReducerActionTypes = addTodoToStateActionType
     | removeTodoFromStateActionType
     | renameTodoInStateActionType
     | InitTodoListStateActionType
 
 
-export const addTodoToState = (todo: todoListType) => ({
-    type: 'TODO/ADD_TODO_LIST', todo
-} as const)
+export const addTodoToState = (todo: todoListType) => ( {
+    type: 'TODO/ADD_TODO_LIST', todo,
+} as const )
 type addTodoToStateActionType = ReturnType<typeof addTodoToState>
 
-export const removeTodoFromState = (id: string) => ({
+export const removeTodoFromState = (id: string) => ( {
     type: 'TODO/REMOVE_TODO_LIST',
-    id
-} as const)
+    id,
+} as const )
 
 type removeTodoFromStateActionType = ReturnType<typeof removeTodoFromState>
 
-export const renameTodoInState = (id: string, title: string) => ({
+export const renameTodoInState = (id: string, title: string) => ( {
     type: 'TODO/CHANGE_TODO_TITLE',
-    id, title
-} as const)
+    id, title,
+} as const )
 
 type renameTodoInStateActionType = ReturnType<typeof renameTodoInState>
 
-export const setTodoListsToState = (items: todoListType[]) => ({
+export const setTodoListsToState = (items: todoListType[]) => ( {
     type: 'TODO/INIT_TODO',
-    items
-} as const)
+    items,
+} as const )
 type InitTodoListStateActionType = ReturnType<typeof setTodoListsToState>
 
 export const addTodoList = (title: string): thunkType => (dispatch) => {
-    todoListApi.createTodoList(title)
-        .then(todoList => {
+    todoListApi.createTodoList( title )
+        .then( todoList => {
             todoList
-            && dispatch(addTodoToState(todoList))
-        })
+            && dispatch( addTodoToState( todoList ) )
+        } )
 }
 
-export const initTodoLists = (): thunkType => (dispatch) => {
-    todoListApi.getTodoLists()
-        .then(items => {
-            items
-            && dispatch(setTodoListsToState(items))
-        })
-        .catch(console.log)
+export const initTodoLists = (): thunkType => async dispatch => {
+    try {
+        const { data, status } = await todoListApi.getTodoLists()
+        if (status === 200 && data.length) {
+            dispatch( setTodoListsToState( data ) )
+        }
+    } catch (e) {
+        console.log( e )
+    }
 }
 
 export const removeTodoList = (id: string): thunkType => (dispatch) => {
-    todoListApi.removeTodoList(id)
-        .then(res => {
+    todoListApi.removeTodoList( id )
+        .then( res => {
             if (res) {
-                dispatch(removeTodoFromState(id))
+                dispatch( removeTodoFromState( id ) )
             }
-        })
+        } )
 }
 
-export const updateTodoTitle = (todoListId: string, title: string):thunkType => (dispatch) => {
-    todoListApi.updateTodoTitle(todoListId, title)
-        .then(success => {
+export const updateTodoTitle = (todoListId: string, title: string): thunkType => (dispatch) => {
+    todoListApi.updateTodoTitle( todoListId, title )
+        .then( success => {
             success
-            && dispatch(renameTodoInState(todoListId, title))
-        })
+            && dispatch( renameTodoInState( todoListId, title ) )
+        } )
 }
 
 export default todoListReducer

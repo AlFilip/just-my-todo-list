@@ -56,17 +56,11 @@ type todoDataType = {
 }
 
 export const todoListApi = {
-    getTodoLists: async () => {
-        const {data, status} = await axiosTodoReq.get<todoListType[]>('')
+    getTodoLists: () =>  axiosTodoReq.get<todoListType[]>('') ,
 
-        if (status === 200) {
-            return data
-        }
-    },
     createTodoList: async (title: string) => {
         const {status, data, data: {resultCode, messages}} = await
-            axiosTodoReq.post<commonResponseType<todoDataType>>('', title)
-
+            axiosTodoReq.post<commonResponseType<todoDataType>>('', { title })
         if (status === 200 && resultCode === 0) {
             return data.data.item
         }
