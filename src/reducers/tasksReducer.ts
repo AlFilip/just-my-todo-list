@@ -1,12 +1,6 @@
 import {thunkType} from "./todoListReducer";
 import {tasksApi} from "../Api/Api";
 
-enum ACTION_TYPES {
-    REMOVE_TASK = 'todoList/REMOVE_TASK',
-    ADD_TASK = 'todoList/ADD_TASK',
-    UPDATE_TASK = 'todoList/UPDATE_TASK',
-    INIT_TASKS = 'todoList/INIT_TASKS'
-}
 
 export type taskType = {
     description: string | null
@@ -30,22 +24,22 @@ const initState: tasksStateType = {}
 
 const tasksReducer = (state = initState, action: allTasksReducerActionTypes): tasksStateType => {
     switch (action.type) {
-        case ACTION_TYPES.ADD_TASK:
+        case 'TASKS/ADD_TASK':
             return {
                 ...state,
                 [action.todoListId]: [...state[action.todoListId], action.task]
             }
-        case ACTION_TYPES.INIT_TASKS:
+        case 'TASKS/INIT_TASKS':
             return {
                 ...state,
                 [action.todoListId]: action.tasks.sort((a, b) => b.order - a.order)
             }
-        case ACTION_TYPES.REMOVE_TASK:
+        case 'TASKS/REMOVE_TASK':
             return {
                 ...state,
                 [action.todoListId]: state[action.todoListId].filter(f => f.id !== action.taskId)
             }
-        case ACTION_TYPES.UPDATE_TASK:
+        case 'TASKS/UPDATE_TASK':
             return {
                 ...state,
                 [action.todoListId]: state[action.todoListId].map(m => m.id === action.task.id ? action.task : m)
@@ -62,28 +56,28 @@ export type allTasksReducerActionTypes = addTaskToStateActionType
 
 type addTaskToStateActionType = ReturnType<typeof addTaskToState>
 export const addTaskToState = (todoListId: string, task: taskType) => ({
-    type: ACTION_TYPES.ADD_TASK,
+    type: 'TASKS/ADD_TASK',
     todoListId,
     task
 } as const)
 
 type removeTaskFromStateActionType = ReturnType<typeof removeTaskFromState>
 export const removeTaskFromState = (todoListId: string, taskId: string) => ({
-    type: ACTION_TYPES.REMOVE_TASK,
+    type: 'TASKS/REMOVE_TASK',
     todoListId,
     taskId
 } as const)
 
 type updateTaskInStateActionType = ReturnType<typeof updateTaskInState>
 export const updateTaskInState = (todoListId: string, task: taskType) => ({
-    type: ACTION_TYPES.UPDATE_TASK,
+    type: 'TASKS/UPDATE_TASK',
     todoListId,
     task
 } as const)
 
 type setTasksToStateActionType = ReturnType<typeof setTasksToState>
 export const setTasksToState = (todoListId: string, tasks: taskType[]) => ({
-    type: ACTION_TYPES.INIT_TASKS,
+    type: 'TASKS/INIT_TASKS',
     todoListId,
     tasks
 } as const)

@@ -7,13 +7,6 @@ export type thunkType = ThunkAction<any, allStateType, any, allActionTypes>
 
 type allActionTypes = allTodoListReducerActionTypes | allTasksReducerActionTypes
 
-enum ACTION_TYPES {
-    REMOVE_TODO_LIST = 'todoList/REMOVE_TODO_LIST',
-    ADD_TODO_LIST = 'todoList/ADD_TODO_LIST',
-    CHANGE_TODO_TITLE = 'todoList/CHANGE_TITLE',
-    INIT_TODO = 'todoList/INIT_TODO'
-}
-
 export type todoListType = {
     id: string
     title: string
@@ -24,13 +17,13 @@ const initState: todoListType[] = []
 
 const todoListReducer = (state = initState, action: allTodoListReducerActionTypes): Array<todoListType> => {
     switch (action.type) {
-        case ACTION_TYPES.ADD_TODO_LIST:
+        case 'TODO/ADD_TODO_LIST':
             return [...state, action.todo]
-        case ACTION_TYPES.REMOVE_TODO_LIST:
+        case 'TODO/REMOVE_TODO_LIST':
             return state.filter(f => f.id !== action.id)
-        case ACTION_TYPES.CHANGE_TODO_TITLE:
+        case 'TODO/CHANGE_TODO_TITLE':
             return state.map(m => m.id === action.id ? {...m, title: action.title} : m)
-        case ACTION_TYPES.INIT_TODO:
+        case 'TODO/INIT_TODO':
             return action.items.sort((a, b) => b.order - a.order)
         default:
             return state
@@ -43,26 +36,26 @@ type allTodoListReducerActionTypes = addTodoToStateActionType
 
 
 export const addTodoToState = (todo: todoListType) => ({
-    type: ACTION_TYPES.ADD_TODO_LIST, todo
+    type: 'TODO/ADD_TODO_LIST', todo
 } as const)
 type addTodoToStateActionType = ReturnType<typeof addTodoToState>
 
 export const removeTodoFromState = (id: string) => ({
-    type: ACTION_TYPES.REMOVE_TODO_LIST,
+    type: 'TODO/REMOVE_TODO_LIST',
     id
 } as const)
 
 type removeTodoFromStateActionType = ReturnType<typeof removeTodoFromState>
 
 export const renameTodoInState = (id: string, title: string) => ({
-    type: ACTION_TYPES.CHANGE_TODO_TITLE,
+    type: 'TODO/CHANGE_TODO_TITLE',
     id, title
 } as const)
 
 type renameTodoInStateActionType = ReturnType<typeof renameTodoInState>
 
 export const setTodoListsToState = (items: todoListType[]) => ({
-    type: ACTION_TYPES.INIT_TODO,
+    type: 'TODO/INIT_TODO',
     items
 } as const)
 type InitTodoListStateActionType = ReturnType<typeof setTodoListsToState>

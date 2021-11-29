@@ -35,15 +35,14 @@ export type authMeDataType = {
 }
 
 export const authApi = {
-    me: () => {
-        return axiosAuthReq.get<commonResponseType<authMeDataType>>('me')
-            .then(res => {
-                if (res.status === 200) {
-                    const {data, resultCode} = res.data
-                    return resultCode === 0 && data
-                }
-            })
-            .catch(console.log)
+    me: async () => {
+        const {status, data: {data, resultCode, messages}} = await
+            axiosAuthReq.get<commonResponseType<authMeDataType>>('me')
+
+        if (status === 200) {
+            return resultCode === 0 && data
+        }
+        console.log(messages[0])
     },
 }
 
@@ -56,11 +55,10 @@ type todoDataType = {
     }
 }
 
-
 export const todoListApi = {
     getTodoLists: async () => {
-        const response = await axiosTodoReq.get<todoListType[]>('')
-        const {data, status} = response
+        const {data, status} = await axiosTodoReq.get<todoListType[]>('')
+
         if (status === 200) {
             return data
         }
@@ -68,6 +66,7 @@ export const todoListApi = {
     createTodoList: async (title: string) => {
         const {status, data, data: {resultCode, messages}} = await
             axiosTodoReq.post<commonResponseType<todoDataType>>('', title)
+
         if (status === 200 && resultCode === 0) {
             return data.data.item
         }
@@ -75,15 +74,20 @@ export const todoListApi = {
     },
     removeTodoList: async (id: string) => {
         const response = await axiosTodoReq.delete<commonResponseType>(`${id}`)
+
         if (response.status === 200) {
             return true
         }
     },
     updateTodoTitle: async (todoListId: string, title: string) => {
-        const {status, data: {resultCode}} = await axiosTodoReq.put<commonResponseType>(`${todoListId}`, {title})
+        const {status, data: {resultCode}} = await
+            axiosTodoReq.put<commonResponseType>(`${todoListId}`, {title})
+
         return status === 200 && resultCode === 0
     }
 }
+
+
 
 
 type getTasksResponseType = {
@@ -96,6 +100,7 @@ type getTasksResponseType = {
 export const tasksApi = {
     getTasks: async (todoListId: string) => {
         const {data, status} = await axiosTodoReq.get<getTasksResponseType>(`/${todoListId}/tasks`)
+
         const {items, error} = data
         if (status === 200 && !error) {
             return items
@@ -105,6 +110,7 @@ export const tasksApi = {
     addTask: async (todoListId: string, title: string) => {
         const {status, data: {data: {item}, resultCode, messages}} = await
             axiosTodoReq.post<commonResponseType<{ item: taskType }>>(`${todoListId}/tasks`, {title})
+
         if (status === 200 && resultCode === 0) {
             return item
         }
@@ -113,6 +119,7 @@ export const tasksApi = {
     deleteTask: async (todoListId: string, taskId: string) => {
         const {status, data: {resultCode, messages}} = await
             axiosTodoReq.delete<commonResponseType>(`${todoListId}/tasks/${taskId}`)
+
         if (status === 200 && resultCode === 0) {
             return true
         }
