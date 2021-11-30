@@ -7,8 +7,8 @@ import { allStateType } from "./redux/store"
 import { AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography } from "@mui/material"
 import { AddItemForm } from "./Components/Common/AdditemForm/AddItemForm"
 import { authApi } from "./Api/Api"
-import { authStateType, setAuthData } from "./reducers/authReducer"
-import { addTodoList, initTodoLists, todoListType } from "./reducers/todoListReducer"
+import { authStateType, setAuthDataToState } from "./reducers/authReducer"
+import { addTodoList, getTodos, todoListType } from "./reducers/todoListReducer"
 
 
 function App() {
@@ -19,17 +19,17 @@ function App() {
     const dispatch = useDispatch<Dispatch<any>>()
 
     useEffect( () => {
-        !isAuth
-        && authApi.me()
-            .then( data => {
-                data
-                && dispatch( setAuthData( { ...data, isAuth: true } ) )
-            } )
+        // !isAuth
+        // && authApi.me()
+            // .then( data => {
+            //     data
+            //     && dispatch( setAuthData( { ...data, isAuth: true } ) )
+            // } )
     }, [dispatch, isAuth] )
 
     useEffect( () => {
         isAuth
-        && dispatch( initTodoLists() )
+        && dispatch( getTodos() )
     }, [dispatch, isAuth] )
 
     const addTodo = useCallback( (title: string) => {

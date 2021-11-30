@@ -66,7 +66,7 @@ export const addTodoList = (title: string): thunkType => (dispatch) => {
         } )
 }
 
-export const initTodoLists = (): thunkType => async dispatch => {
+export const getTodos = (): thunkType => async dispatch => {
     try {
         const { data, status } = await todoListApi.getTodoLists()
         if (status === 200 && data.length) {
