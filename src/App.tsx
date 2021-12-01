@@ -2,13 +2,12 @@ import React, { useCallback, useEffect } from 'react'
 import './App.css'
 import { TodoList } from "./Components/TodoList/TodoList"
 import { useDispatch, useSelector } from "react-redux"
-import { Dispatch } from "redux"
 import { allStateType } from "./redux/store"
 import { AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography } from "@mui/material"
 import { AddItemForm } from "./Components/Common/AdditemForm/AddItemForm"
-import { authApi } from "./Api/Api"
-import { authStateType, setAuthDataToState } from "./reducers/authReducer"
-import { addTodoList, getTodos, todoListType } from "./reducers/todoListReducer"
+import { authStateType } from "./reducers/authReducer"
+import { addTodoList, todoListType } from "./reducers/todoListReducer"
+import { initApp } from './reducers/appReducer'
 
 
 function App() {
@@ -16,21 +15,16 @@ function App() {
     const { isAuth, login } = useSelector<allStateType, authStateType>( state => state.auth )
     const todoLists = useSelector<allStateType, Array<todoListType>>( state => state.todo )
 
-    const dispatch = useDispatch<Dispatch<any>>()
+    const dispatch = useDispatch()
 
     useEffect( () => {
-        // !isAuth
-        // && authApi.me()
-            // .then( data => {
-            //     data
-            //     && dispatch( setAuthData( { ...data, isAuth: true } ) )
-            // } )
-    }, [dispatch, isAuth] )
+        dispatch( initApp() )
+    }, [dispatch] )
 
-    useEffect( () => {
-        isAuth
-        && dispatch( getTodos() )
-    }, [dispatch, isAuth] )
+    // useEffect( () => {
+    //     isAuth
+    //     && dispatch( getTodos() )
+    // }, [dispatch, isAuth] )
 
     const addTodo = useCallback( (title: string) => {
         dispatch( addTodoList( title ) )

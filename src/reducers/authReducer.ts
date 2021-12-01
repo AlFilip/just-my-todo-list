@@ -1,5 +1,5 @@
 import { thunkType } from '../redux/store'
-import { authApi, resultCodes } from '../Api/Api'
+import { authApi, resCodes } from '../Api/Api'
 
 
 export type authStateType =  {
@@ -35,9 +35,14 @@ export const setAuthDataToState = (payload: authStateType) => ({
 } as const)
 
 export const initAuthData = ():thunkType => async dispatch => {
-    const { data: { data, resultCode, messages }, status } = await authApi.me()
-    if (status === 200 && resultCode === resultCodes.success) {
-        dispatch( setAuthDataToState( { ...data, isAuth: true } ) )
+    try {
+        const { data: { data, resultCode, messages }, status } = await authApi.me()
+        if (status === 200 && resultCode === resCodes.success) {
+            dispatch( setAuthDataToState( { ...data, isAuth: true } ) )
+            return true
+        }
+    }catch (e) {
+        console.log(e)
     }
 }
 

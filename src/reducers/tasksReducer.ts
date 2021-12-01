@@ -82,12 +82,12 @@ export const setTasksToState = (todoListId: string, tasks: taskType[]) => ( {
     tasks,
 } as const )
 
-export const initTasks = (todoListId: string): thunkType => (dispatch) => {
-    tasksApi.getTasks( todoListId )
-        .then( tasks => {
-            tasks
-            && dispatch( setTasksToState( todoListId, tasks ) )
-        } )
+export const initTasks = (todoListId: string): thunkType => async dispatch => {
+    const { data: { items, error }, status } = await tasksApi.getTasks( todoListId )
+    if (status === 200 && !error) {
+        dispatch( setTasksToState( todoListId, items ) )
+    }
+
 }
 
 export const createTask = (todoListId: string, title: string): thunkType => (dispatch) => {

@@ -1,6 +1,6 @@
 import { thunkType } from '../redux/store'
-import { authApi, resultCodes } from '../Api/Api'
-import { initAuthData, setAuthDataToState } from './authReducer'
+import { initAuthData } from './authReducer'
+import { getTodos } from './todoListReducer'
 
 
 const initState = {
@@ -26,8 +26,27 @@ const setIsInit = () => ( {
     type: 'SET_INIT',
 } as const )
 
-const initApp = (): thunkType => async dispatch => {
-    dispatch(initAuthData())
+export const initApp = (): thunkType => async dispatch => {
+    const isAuthCompleted = await dispatch( initAuthData() )
+    isAuthCompleted && dispatch( getTodos() )
 }
 
 export default appReducer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

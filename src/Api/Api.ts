@@ -3,7 +3,7 @@ import { todoListType } from "../reducers/todoListReducer"
 import { taskType } from "../reducers/tasksReducer"
 
 
-export enum resultCodes {
+export enum resCodes {
     success = 0,
     error = 1,
 }
@@ -57,26 +57,15 @@ type todoDataType = {
 export const todoListApi = {
     getTodoLists: () => axiosTodoReq.get<todoListType[]>( '' ),
 
-    createTodoList: async (title: string) => {
-        const { status, data, data: { resultCode, messages } } = await
-            axiosTodoReq.post<commonResponseType<todoDataType>>( '', { title } )
-        if (status === 200 && resultCode === 0) {
-            return data.data.item
-        }
-        alert( messages[0] )
+    createTodoList: (title: string) => {
+        return axiosTodoReq.post<commonResponseType<todoDataType>>( '', { title } )
     },
-    removeTodoList: async (id: string) => {
-        const response = await axiosTodoReq.delete<commonResponseType>( `${ id }` )
 
-        if (response.status === 200) {
-            return true
-        }
+    removeTodoList: (id: string) => {
+        return axiosTodoReq.delete<commonResponseType>( `${ id }` )
     },
-    updateTodoTitle: async (todoListId: string, title: string) => {
-        const { status, data: { resultCode } } = await
-            axiosTodoReq.put<commonResponseType>( `${ todoListId }`, { title } )
-
-        return status === 200 && resultCode === 0
+    updateTodoTitle: (todoListId: string, title: string) => {
+        return  axiosTodoReq.put<commonResponseType>( `${ todoListId }`, { title } )
     },
 }
 
@@ -90,13 +79,7 @@ type getTasksResponseType = {
 
 export const tasksApi = {
     getTasks: async (todoListId: string) => {
-        const { data, status } = await axiosTodoReq.get<getTasksResponseType>( `/${ todoListId }/tasks` )
-
-        const { items, error } = data
-        if (status === 200 && !error) {
-            return items
-        }
-        console.log( error )
+        return  axiosTodoReq.get<getTasksResponseType>( `/${ todoListId }/tasks` )
     },
     addTask: async (todoListId: string, title: string) => {
         const { status, data: { data: { item }, resultCode, messages } } = await
