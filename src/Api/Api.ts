@@ -26,9 +26,15 @@ const axiosAuthReq = axios.create( {
 } )
 
 
+export enum TaskStatuses {
+    New = 0,
+    InProgress = 1,
+    Completed = 2,
+    Draft = 3
+}
 type commonResponseType<T = {}> = {
     data: T
-    status: number
+    status: TaskStatuses
     resultCode: number
     messages: string[]
     fieldsErrors: any[]

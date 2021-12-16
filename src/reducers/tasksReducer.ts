@@ -1,12 +1,11 @@
-import { tasksApi } from "../Api/Api"
+import { tasksApi, TaskStatuses } from "../Api/Api"
 import { thunkType } from '../redux/store'
 
 
 export type taskType = {
     description: string | null
     title: string
-    completed: boolean | undefined
-    status: number
+    status: TaskStatuses
     priority: number
     startDate: string | null
     deadline: string | null

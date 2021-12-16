@@ -15,7 +15,7 @@ const initState: todoListType[] = []
 const todoListReducer = (state = initState, action: allTodoListReducerActionTypes): todoListType[] => {
     switch (action.type) {
         case 'TODO/ADD_TODO_LIST':
-            return [...state, { ...action.todo }]
+            return [{ ...action.todo }, ...state]
         case 'TODO/REMOVE_TODO_LIST':
             return state.filter( f => f.id !== action.id )
         case 'TODO/CHANGE_TODO_TITLE':
