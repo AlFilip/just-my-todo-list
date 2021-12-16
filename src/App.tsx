@@ -6,14 +6,15 @@ import { allStateType } from "./redux/store"
 import { AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography } from "@mui/material"
 import { AddItemForm } from "./Components/Common/AdditemForm/AddItemForm"
 import { addTodoList, todoListType } from "./reducers/todoListReducer"
-import { initApp } from './reducers/appReducer'
+import { AppStatusType, initApp } from './reducers/appReducer'
+import LinearProgress from '@mui/material/LinearProgress'
 
 
 function App() {
     console.log( 'App' )
-    // const { isAuth, login } = useSelector<allStateType, authStateType>( state => state.auth )
     const isAuth = useSelector<allStateType, boolean>( state => state.auth.isAuth )
     const login = useSelector<allStateType, null | string>( state => state.auth.login )
+    const appStatus = useSelector<allStateType, AppStatusType>( state => state.app.status )
 
     const todoLists = useSelector<allStateType, Array<todoListType>>( state => state.todo )
 
@@ -23,10 +24,6 @@ function App() {
         dispatch( initApp() )
     }, [dispatch] )
 
-    // useEffect( () => {
-    //     isAuth
-    //     && dispatch( getTodos() )
-    // }, [dispatch, isAuth] )
 
     const addTodo = useCallback( (title: string) => {
         dispatch( addTodoList( title ) )
@@ -64,9 +61,11 @@ function App() {
                             </Button>
                         }
                     </Toolbar>
+                    <div style={ { height: 4 } }>
+                        { appStatus === 'loading' && <LinearProgress color="secondary"/> }
+                    </div>
                 </AppBar>
             </Box>
-
 
             <Container>
                 <Grid container>

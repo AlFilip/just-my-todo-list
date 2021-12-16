@@ -1,6 +1,7 @@
 import { resCodes, tasksApi, TaskStatuses } from "../Api/Api"
 import { thunkType } from '../redux/store'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { setAppStatus } from './appReducer'
 
 
 export type taskType = {
@@ -53,15 +54,23 @@ export const { addTaskToState, removeTaskFromState, updateTaskInState, setTasksT
 
 
 export const initTasks = (todoListId: string): thunkType => async dispatch => {
-    const { data: { items, error }, status } = await tasksApi.getTasks( todoListId )
-    if (status === 200 && !error) {
-        dispatch( setTasksToState( { todoListId, items } ) )
+    try {
+        dispatch( setAppStatus( { status: 'loading' } ) )
+        const { data: { items, error }, status } = await tasksApi.getTasks( todoListId )
+        if (status === 200 && !error) {
+            dispatch( setTasksToState( { todoListId, items } ) )
+        }
+        error && console.log( error )
+    } catch (e) {
+        console.log( e )
+    } finally {
+        dispatch( setAppStatus( { status: 'idle' } ) )
     }
-    error && console.log( error )
 }
 
 export const createTask = (todoListId: string, title: string): thunkType => async dispatch => {
     try {
+        dispatch( setAppStatus( { status: 'loading' } ) )
         const { status, data: { data: { item }, resultCode, messages: [errorMessage] } } = await tasksApi.addTask( todoListId, title )
         if (status === 200 && resultCode === resCodes.success) {
             dispatch( addTaskToState( { todoListId, item } ) )
@@ -70,11 +79,15 @@ export const createTask = (todoListId: string, title: string): thunkType => asyn
         && console.log( errorMessage )
     } catch (e) {
         console.log( e )
+    } finally {
+        dispatch( setAppStatus( { status: 'idle' } ) )
     }
 }
 
+
 export const deleteTask = (todoListId: string, taskId: string): thunkType => async dispatch => {
     try {
+        dispatch( setAppStatus( { status: 'loading' } ) )
         const { status, data: { resultCode, messages: [errorMessage] } } = await tasksApi.deleteTask( todoListId, taskId )
         if (status === 200 && resultCode === resCodes.success) {
             dispatch( removeTaskFromState( { todoListId, taskId } ) )
@@ -83,11 +96,15 @@ export const deleteTask = (todoListId: string, taskId: string): thunkType => asy
         }
     } catch (e) {
         console.log( e )
+    } finally {
+        dispatch( setAppStatus( { status: 'idle' } ) )
     }
 }
 
+
 export const updateTask = (todoListId: string, task: taskType): thunkType => async dispatch => {
     try {
+        dispatch( setAppStatus( { status: 'loading' } ) )
         const { status, data: { resultCode, messages: [errorMessage] } } = await tasksApi.updateTask( todoListId, task )
         if (status === 200 && resultCode === resCodes.success) {
             dispatch( updateTaskInState( { todoListId, task } ) )
@@ -96,7 +113,10 @@ export const updateTask = (todoListId: string, task: taskType): thunkType => asy
         }
     } catch (e) {
         console.log( e )
+    } finally {
+        dispatch( setAppStatus( { status: 'idle' } ) )
     }
 }
+
 
 export default tasksReducer

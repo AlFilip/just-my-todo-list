@@ -27,6 +27,7 @@ const { setAuthDate } = slice.actions
 
 export const initAuthData = (): thunkType => async dispatch => {
     try {
+
         const { data: { data, resultCode }, status } = await authApi.me()
         if (status === 200 && resultCode === resCodes.success) {
             dispatch( setAuthDate( { ...data, isAuth: true } ) )
