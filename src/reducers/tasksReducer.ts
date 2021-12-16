@@ -1,5 +1,6 @@
-import { tasksApi, TaskStatuses } from "../Api/Api"
+import { resCodes, tasksApi, TaskStatuses } from "../Api/Api"
 import { thunkType } from '../redux/store'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 
 export type taskType = {
@@ -18,99 +19,84 @@ export type taskType = {
 export type tasksStateType = {
     [todoListId: string]: taskType[]
 }
+
 const initState: tasksStateType = {}
 
+const slice = createSlice( {
+    name: 'tasks',
+    initialState: initState,
+    reducers: {
+        addTaskToState(state, action: PayloadAction<{ todoListId: string, item: taskType }>) {
+            const { todoListId, item } = action.payload
+            state[todoListId].unshift( item )
+        },
+        removeTaskFromState(state, { payload: { todoListId, taskId } }: PayloadAction<{ todoListId: string, taskId: string }>) {
+            let tasks = state[todoListId]
+            const index = tasks.findIndex( f => f.id === taskId )
+            tasks.splice( index, 1 )
+        },
+        updateTaskInState(state, { payload: { todoListId, task, task: { id } } }: PayloadAction<{ todoListId: string, task: taskType }>) {
+            let tasks = state[todoListId]
+            const index = tasks.findIndex( f => f.id === id )
+            tasks.splice( index, 1, task )
+        },
+        setTasksToState(state, { payload: { todoListId, items } }: PayloadAction<{ todoListId: string, items: taskType[] }>) {
+            state[todoListId] = items
+        },
 
-const tasksReducer = (state = initState, action: allTasksReducerActionTypes): tasksStateType => {
-    switch (action.type) {
-        case 'TASKS/ADD_TASK':
-            return {
-                ...state,
-                [action.todoListId]: [...state[action.todoListId], action.task],
-            }
-        case 'TASKS/INIT_TASKS':
-            return {
-                ...state,
-                [action.todoListId]: action.tasks.sort( (a, b) => b.order - a.order ),
-            }
-        case 'TASKS/REMOVE_TASK':
-            return {
-                ...state,
-                [action.todoListId]: state[action.todoListId].filter( f => f.id !== action.taskId ),
-            }
-        case 'TASKS/UPDATE_TASK':
-            return {
-                ...state,
-                [action.todoListId]: state[action.todoListId].map( m => m.id === action.task.id ? action.task : m ),
-            }
-        default:
-            return state
-    }
-}
+    },
+} )
 
-export type allTasksReducerActionTypes = addTaskToStateActionType
-    | removeTaskFromStateActionType
-    | updateTaskInStateActionType
-    | setTasksToStateActionType
+const tasksReducer = slice.reducer
 
-type addTaskToStateActionType = ReturnType<typeof addTaskToState>
-export const addTaskToState = (todoListId: string, task: taskType) => ( {
-    type: 'TASKS/ADD_TASK',
-    todoListId,
-    task,
-} as const )
+export const { addTaskToState, removeTaskFromState, updateTaskInState, setTasksToState } = slice.actions
 
-type removeTaskFromStateActionType = ReturnType<typeof removeTaskFromState>
-export const removeTaskFromState = (todoListId: string, taskId: string) => ( {
-    type: 'TASKS/REMOVE_TASK',
-    todoListId,
-    taskId,
-} as const )
-
-type updateTaskInStateActionType = ReturnType<typeof updateTaskInState>
-export const updateTaskInState = (todoListId: string, task: taskType) => ( {
-    type: 'TASKS/UPDATE_TASK',
-    todoListId,
-    task,
-} as const )
-
-type setTasksToStateActionType = ReturnType<typeof setTasksToState>
-export const setTasksToState = (todoListId: string, tasks: taskType[]) => ( {
-    type: 'TASKS/INIT_TASKS',
-    todoListId,
-    tasks,
-} as const )
 
 export const initTasks = (todoListId: string): thunkType => async dispatch => {
     const { data: { items, error }, status } = await tasksApi.getTasks( todoListId )
     if (status === 200 && !error) {
-        dispatch( setTasksToState( todoListId, items ) )
+        dispatch( setTasksToState( { todoListId, items } ) )
     }
-
+    error && console.log( error )
 }
 
-export const createTask = (todoListId: string, title: string): thunkType => (dispatch) => {
-    tasksApi.addTask( todoListId, title )
-        .then( task => {
-            task
-            && dispatch( addTaskToState( todoListId, task ) )
-        } )
+export const createTask = (todoListId: string, title: string): thunkType => async dispatch => {
+    try {
+        const { status, data: { data: { item }, resultCode, messages: [errorMessage] } } = await tasksApi.addTask( todoListId, title )
+        if (status === 200 && resultCode === resCodes.success) {
+            dispatch( addTaskToState( { todoListId, item } ) )
+        }
+        errorMessage
+        && console.log( errorMessage )
+    } catch (e) {
+        console.log( e )
+    }
 }
 
-export const deleteTask = (todoListId: string, taskId: string): thunkType => (dispatch) => {
-    tasksApi.deleteTask( todoListId, taskId )
-        .then( isRemoved => {
-            isRemoved
-            && dispatch( removeTaskFromState( todoListId, taskId ) )
-        } )
+export const deleteTask = (todoListId: string, taskId: string): thunkType => async dispatch => {
+    try {
+        const { status, data: { resultCode, messages: [errorMessage] } } = await tasksApi.deleteTask( todoListId, taskId )
+        if (status === 200 && resultCode === resCodes.success) {
+            dispatch( removeTaskFromState( { todoListId, taskId } ) )
+            errorMessage
+            && console.log( errorMessage )
+        }
+    } catch (e) {
+        console.log( e )
+    }
 }
 
-export const updateTask = (todoListId: string, task: taskType): thunkType => (dispatch) => {
-    tasksApi.updateTask( todoListId, task )
-        .then( res => {
-            res &&
-            dispatch( updateTaskInState( todoListId, task ) )
-        } )
+export const updateTask = (todoListId: string, task: taskType): thunkType => async dispatch => {
+    try {
+        const { status, data: { resultCode, messages: [errorMessage] } } = await tasksApi.updateTask( todoListId, task )
+        if (status === 200 && resultCode === resCodes.success) {
+            dispatch( updateTaskInState( { todoListId, task } ) )
+            errorMessage
+            && console.log( errorMessage )
+        }
+    } catch (e) {
+        console.log( e )
+    }
 }
 
 export default tasksReducer

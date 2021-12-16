@@ -1,55 +1,41 @@
 import { thunkType } from '../redux/store'
 import { authApi, resCodes } from '../Api/Api'
+import { createSlice } from '@reduxjs/toolkit'
 
 
-export type authStateType =  {
-    isAuth: boolean
-    email: string | null
-    id: number | null
-    login: string | null
-}
-
-const initState: authStateType = {
+const initState = {
     isAuth: false,
     email: null,
     id: null,
     login: null,
 }
 
-const authReducer = (state=initState, action: authActionTypes): authStateType => {
-    switch (action.type) {
-        case "SET_AUTH_DATA":
-            return {
-                ...state, ...action.payload
-            }
-        default: return state
-    }
-}
+const slice = createSlice( {
+    name: 'auth',
+    initialState: initState,
+    reducers: {
+        setAuthDate(state, action) {
+            state = action.payload
+        },
+    },
+} )
+
+const authReducer = slice.reducer
+
+const { setAuthDate } = slice.actions
 
 
-export type authActionTypes = setAuthDataAction
-type setAuthDataAction = ReturnType<typeof setAuthDataToState>
-
-export const setAuthDataToState = (payload: authStateType) => ({
-    type: 'SET_AUTH_DATA', payload
-} as const)
-
-export const initAuthData = ():thunkType => async dispatch => {
+export const initAuthData = (): thunkType => async dispatch => {
     try {
-        const { data: { data, resultCode, messages }, status } = await authApi.me()
+        const { data: { data, resultCode }, status } = await authApi.me()
         if (status === 200 && resultCode === resCodes.success) {
-            dispatch( setAuthDataToState( { ...data, isAuth: true } ) )
+            dispatch( setAuthDate( { ...data, isAuth: true } ) )
             return true
         }
-    }catch (e) {
-        console.log(e)
+    } catch (e) {
+        console.log( e )
     }
 }
-
-
-
-
-
 
 
 export default authReducer

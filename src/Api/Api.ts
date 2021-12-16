@@ -32,6 +32,7 @@ export enum TaskStatuses {
     Completed = 2,
     Draft = 3
 }
+
 type commonResponseType<T = {}> = {
     data: T
     status: TaskStatuses
@@ -71,7 +72,7 @@ export const todoListApi = {
         return axiosTodoReq.delete<commonResponseType>( `${ id }` )
     },
     updateTodoTitle: (todoListId: string, title: string) => {
-        return  axiosTodoReq.put<commonResponseType>( `${ todoListId }`, { title } )
+        return axiosTodoReq.put<commonResponseType>( `${ todoListId }`, { title } )
     },
 }
 
@@ -84,34 +85,18 @@ type getTasksResponseType = {
 }
 
 export const tasksApi = {
-    getTasks: async (todoListId: string) => {
-        return  axiosTodoReq.get<getTasksResponseType>( `/${ todoListId }/tasks` )
+    getTasks: (todoListId: string) => {
+        return axiosTodoReq.get<getTasksResponseType>( `/${ todoListId }/tasks` )
     },
-    addTask: async (todoListId: string, title: string) => {
-        const { status, data: { data: { item }, resultCode, messages } } = await
-            axiosTodoReq.post<commonResponseType<{ item: taskType }>>( `${ todoListId }/tasks`, { title } )
+    addTask: (todoListId: string, title: string) => {
+        return axiosTodoReq.post<commonResponseType<{ item: taskType }>>( `${ todoListId }/tasks`, { title } )
+    },
+    deleteTask: (todoListId: string, taskId: string) => {
+        return axiosTodoReq.delete<commonResponseType>( `${ todoListId }/tasks/${ taskId }` )
+    },
+    updateTask: (todoListId: string, task: taskType) => {
+        return axiosTodoReq.put<commonResponseType>( `${ todoListId }/tasks/${ task.id }`, task )
 
-        if (status === 200 && resultCode === 0) {
-            return item
-        }
-        alert( messages[0] )
-    },
-    deleteTask: async (todoListId: string, taskId: string) => {
-        const { status, data: { resultCode, messages } } = await
-            axiosTodoReq.delete<commonResponseType>( `${ todoListId }/tasks/${ taskId }` )
-
-        if (status === 200 && resultCode === 0) {
-            return true
-        }
-        alert( messages[0] )
-    },
-    updateTask: async (todoListId: string, task: taskType) => {
-        const { status, data: { resultCode, messages } } = await
-            axiosTodoReq.put<commonResponseType>( `${ todoListId }/tasks/${ task.id }`, task )
-        if (status === 200 && resultCode === 0) {
-            return true
-        }
-        alert( messages[0] )
     },
 }
 

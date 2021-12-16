@@ -5,14 +5,16 @@ import { useDispatch, useSelector } from "react-redux"
 import { allStateType } from "./redux/store"
 import { AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography } from "@mui/material"
 import { AddItemForm } from "./Components/Common/AdditemForm/AddItemForm"
-import { authStateType } from "./reducers/authReducer"
 import { addTodoList, todoListType } from "./reducers/todoListReducer"
 import { initApp } from './reducers/appReducer'
 
 
 function App() {
     console.log( 'App' )
-    const { isAuth, login } = useSelector<allStateType, authStateType>( state => state.auth )
+    // const { isAuth, login } = useSelector<allStateType, authStateType>( state => state.auth )
+    const isAuth = useSelector<allStateType, boolean>( state => state.auth.isAuth )
+    const login = useSelector<allStateType, null | string>( state => state.auth.login )
+
     const todoLists = useSelector<allStateType, Array<todoListType>>( state => state.todo )
 
     const dispatch = useDispatch()

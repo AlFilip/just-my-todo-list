@@ -1,30 +1,26 @@
 import { thunkType } from '../redux/store'
 import { initAuthData } from './authReducer'
 import { getTodos } from './todoListReducer'
+import { createSlice } from '@reduxjs/toolkit'
 
 
 const initState = {
     isInit: false,
 }
-type appStateType = typeof initState
 
-const appReducer = (state = initState, action: appActionTypes): appStateType => {
-    switch (action.type) {
-        case 'SET_INIT':
-            return {
-                ...state, isInit: true,
-            }
-        default:
-            return state
-    }
-}
+const slice = createSlice( {
+    name: 'app',
+    initialState: initState,
+    reducers: {
+        setInit(state) {
+            state.isInit = true
+        },
+    },
+} )
 
-export type appActionTypes = setIsInitActionType
+const appReducer = slice.reducer
+export const { setInit } = slice.actions
 
-type setIsInitActionType = ReturnType<typeof setIsInit>
-const setIsInit = () => ( {
-    type: 'SET_INIT',
-} as const )
 
 export const initApp = (): thunkType => async dispatch => {
     const isAuthCompleted = await dispatch( initAuthData() )
