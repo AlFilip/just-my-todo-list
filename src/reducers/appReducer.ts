@@ -10,6 +10,7 @@ export type AppStatusType = 'idle' | 'loading'
 const initState = {
     isInit: false,
     status: 'loading' as AppStatusType,
+    error: null as null | string,
 }
 type appStateType = typeof initState
 
@@ -24,11 +25,14 @@ const slice = createSlice( {
         setAppStatus(state: appStateType, { payload: { status } }: PayloadAction<{ status: AppStatusType }>) {
             state.status = status
         },
+        setError(state: appStateType, { payload: { error } }: PayloadAction<{ error: string | null }>) {
+            state.error = error
+        },
     },
 } )
 
 const appReducer = slice.reducer
-export const { setInit, setAppStatus } = slice.actions
+export const { setInit, setAppStatus, setError } = slice.actions
 
 
 export const initApp = (): thunkType => async dispatch => {

@@ -8,6 +8,7 @@ import { AddItemForm } from "./Components/Common/AdditemForm/AddItemForm"
 import { addTodoList, todoListType } from "./reducers/todoListReducer"
 import { AppStatusType, initApp } from './reducers/appReducer'
 import LinearProgress from '@mui/material/LinearProgress'
+import { ErrorSnackbar } from './Components/Common/ErrorSnackBar/ErrorSnackBar'
 
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
                 <Grid container>
                     { mappedTodoLists }
                 </Grid>
+                <ErrorSnackbar/>
             </Container>
         </div>
     )

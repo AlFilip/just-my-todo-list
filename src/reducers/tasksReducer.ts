@@ -1,7 +1,7 @@
 import { resCodes, tasksApi, TaskStatuses } from "../Api/Api"
 import { thunkType } from '../redux/store'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { setAppStatus } from './appReducer'
+import { setAppStatus, setError } from './appReducer'
 
 
 export type taskType = {
@@ -60,7 +60,8 @@ export const initTasks = (todoListId: string): thunkType => async dispatch => {
         if (status === 200 && !error) {
             dispatch( setTasksToState( { todoListId, items } ) )
         }
-        error && console.log( error )
+        error
+        && dispatch( setError( { error: error } ) )
     } catch (e) {
         console.log( e )
     } finally {
@@ -76,7 +77,7 @@ export const createTask = (todoListId: string, title: string): thunkType => asyn
             dispatch( addTaskToState( { todoListId, item } ) )
         }
         errorMessage
-        && console.log( errorMessage )
+        && dispatch( setError( { error: errorMessage } ) )
     } catch (e) {
         console.log( e )
     } finally {
@@ -91,9 +92,9 @@ export const deleteTask = (todoListId: string, taskId: string): thunkType => asy
         const { status, data: { resultCode, messages: [errorMessage] } } = await tasksApi.deleteTask( todoListId, taskId )
         if (status === 200 && resultCode === resCodes.success) {
             dispatch( removeTaskFromState( { todoListId, taskId } ) )
-            errorMessage
-            && console.log( errorMessage )
         }
+        errorMessage
+        && dispatch( setError( { error: errorMessage } ) )
     } catch (e) {
         console.log( e )
     } finally {
@@ -108,9 +109,9 @@ export const updateTask = (todoListId: string, task: taskType): thunkType => asy
         const { status, data: { resultCode, messages: [errorMessage] } } = await tasksApi.updateTask( todoListId, task )
         if (status === 200 && resultCode === resCodes.success) {
             dispatch( updateTaskInState( { todoListId, task } ) )
-            errorMessage
-            && console.log( errorMessage )
         }
+        errorMessage
+        && dispatch( setError( { error: errorMessage } ) )
     } catch (e) {
         console.log( e )
     } finally {

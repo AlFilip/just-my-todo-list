@@ -1,7 +1,7 @@
 import { resCodes, todoListApi } from "../Api/Api"
 import { thunkType } from '../redux/store'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { setAppStatus, setInit } from "./appReducer"
+import { setAppStatus, setError, setInit } from "./appReducer"
 
 
 export type todoListType = {
@@ -46,7 +46,7 @@ export const addTodoList = (title: string): thunkType => async dispatch => {
             dispatch( addTodoToState( { item } ) )
         }
         errorMessage
-        && console.log( errorMessage )
+        && dispatch( setError( { error: errorMessage } ) )
     } catch (e) {
         console.log( e )
     } finally {
@@ -78,7 +78,7 @@ export const removeTodoList = (id: string): thunkType => async dispatch => {
             dispatch( removeTodoFromState( { id } ) )
         }
         errorMessage
-        && console.log( errorMessage )
+        && dispatch( setError( { error: errorMessage } ) )
     } catch (e) {
         console.log( e )
     } finally {
@@ -89,10 +89,12 @@ export const removeTodoList = (id: string): thunkType => async dispatch => {
 export const updateTodoTitle = (todoListId: string, title: string): thunkType => async dispatch => {
     try {
         dispatch( setAppStatus( { status: 'loading' } ) )
-        const { status, data: { resultCode } } = await todoListApi.updateTodoTitle( todoListId, title )
+        const { status, data: { resultCode, messages: [errorMessage] } } = await todoListApi.updateTodoTitle( todoListId, title )
         if (status === 200 && resultCode === resCodes.success) {
             dispatch( renameTodoInState( { todoListId, title } ) )
         }
+        errorMessage
+        && dispatch( setError( { error: errorMessage } ) )
     } catch (e) {
         console.log( e )
     } finally {
