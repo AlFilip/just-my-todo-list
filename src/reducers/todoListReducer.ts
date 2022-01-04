@@ -1,14 +1,11 @@
-import { resCodes, todoListApi } from "../Api/Api"
+import { domainTodoListType, resCodes, todoListApi } from "../Api/Api"
 import { thunkType } from '../redux/store'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { setAppStatus, setError, setInit } from "./appReducer"
+import { setAppStatus, setError, setInit, statusType } from "./appReducer"
 
 
-export type todoListType = {
-    id: string
-    title: string
-    addedDate: string
-    order: number
+export type todoListType = domainTodoListType & {
+    todoStatus: statusType
 }
 const initState: todoListType[] = []
 
@@ -16,15 +13,15 @@ const slice = createSlice( {
     name: 'todo',
     initialState: initState,
     reducers: {
-        addTodoToState(state, { payload: { item } }: PayloadAction<{ item: todoListType }>) {
-            state.unshift( item )
+        addTodoToState(state, { payload: { item } }: PayloadAction<{ item: domainTodoListType }>) {
+            state.unshift( { ...item, todoStatus: 'idle' } )
         },
         removeTodoFromState(state, { payload: { id } }: PayloadAction<{ id: string }>) {
             const index = state.findIndex( f => f.id === id )
             state.splice( index, 1 )
         },
-        renameTodoInState(state, { payload: { todoListId, title } }: PayloadAction<{ todoListId: string, title: string }>) {
-            const todo = state.find( f => f.id === todoListId )
+        renameTodoInState(state, { payload: { id, title } }: PayloadAction<{ id: string, title: string }>) {
+            const todo = state.find( f => f.id === id )
             if (todo) {
                 todo.title = title
             }
@@ -32,11 +29,15 @@ const slice = createSlice( {
         setTodoListsToState(state, { payload: { items } }: PayloadAction<{ items: todoListType[] }>) {
             state.push( ...items )
         },
+        updateTodoStatus(state, { payload: { id, status } }: PayloadAction<{ id: string, status: statusType }>) {
+            return state.map( m => m.id === id ? { ...m, todoStatus: status } : m )
+        },
     },
 } )
 
 const todoListReducer = slice.reducer
-const { setTodoListsToState, renameTodoInState, addTodoToState, removeTodoFromState } = slice.actions
+export const { setTodoListsToState, renameTodoInState, addTodoToState, removeTodoFromState, updateTodoStatus } = slice.actions
+
 
 export const addTodoList = (title: string): thunkType => async dispatch => {
     try {
@@ -60,7 +61,7 @@ export const getTodos = (): thunkType => async dispatch => {
         dispatch( setAppStatus( { status: 'loading' } ) )
         const { data, status } = await todoListApi.getTodoLists()
         if (status === 200 && data.length) {
-            dispatch( setTodoListsToState( { items: data } ) )
+            dispatch( setTodoListsToState( { items: data.map( m => ( { ...m, todoStatus: 'idle' } ) ) } ) )
             dispatch( setInit() )
         }
     } catch (e) {
@@ -72,6 +73,7 @@ export const getTodos = (): thunkType => async dispatch => {
 
 export const removeTodoList = (id: string): thunkType => async dispatch => {
     try {
+        dispatch( updateTodoStatus( { id, status: 'loading' } ) )
         dispatch( setAppStatus( { status: 'loading' } ) )
         const { status, data: { resultCode, messages: [errorMessage] } } = await todoListApi.removeTodoList( id )
         if (status === 200 && resultCode === resCodes.success) {
@@ -86,12 +88,13 @@ export const removeTodoList = (id: string): thunkType => async dispatch => {
     }
 }
 
-export const updateTodoTitle = (todoListId: string, title: string): thunkType => async dispatch => {
+export const updateTodoTitle = (id: string, title: string): thunkType => async dispatch => {
     try {
+        dispatch( updateTodoStatus( { id: id, status: 'loading' } ) )
         dispatch( setAppStatus( { status: 'loading' } ) )
-        const { status, data: { resultCode, messages: [errorMessage] } } = await todoListApi.updateTodoTitle( todoListId, title )
+        const { status, data: { resultCode, messages: [errorMessage] } } = await todoListApi.updateTodoTitle( id, title )
         if (status === 200 && resultCode === resCodes.success) {
-            dispatch( renameTodoInState( { todoListId, title } ) )
+            dispatch( renameTodoInState( { id, title } ) )
         }
         errorMessage
         && dispatch( setError( { error: errorMessage } ) )
@@ -99,6 +102,7 @@ export const updateTodoTitle = (todoListId: string, title: string): thunkType =>
         console.log( e )
     } finally {
         dispatch( setAppStatus( { status: 'idle' } ) )
+        dispatch( updateTodoStatus( { id: id, status: 'idle' } ) )
     }
 }
 

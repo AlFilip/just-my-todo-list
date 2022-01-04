@@ -6,7 +6,7 @@ import { allStateType } from "./redux/store"
 import { AppBar, Box, Button, Container, Grid, IconButton, Toolbar, Typography } from "@mui/material"
 import { AddItemForm } from "./Components/Common/AdditemForm/AddItemForm"
 import { addTodoList, todoListType } from "./reducers/todoListReducer"
-import { AppStatusType, initApp } from './reducers/appReducer'
+import { initApp, statusType } from './reducers/appReducer'
 import LinearProgress from '@mui/material/LinearProgress'
 import { ErrorSnackbar } from './Components/Common/ErrorSnackBar/ErrorSnackBar'
 
@@ -15,7 +15,7 @@ function App() {
     console.log( 'App' )
     const isAuth = useSelector<allStateType, boolean>( state => state.auth.isAuth )
     const login = useSelector<allStateType, null | string>( state => state.auth.login )
-    const appStatus = useSelector<allStateType, AppStatusType>( state => state.app.status )
+    const appStatus = useSelector<allStateType, statusType>( state => state.app.status )
 
     const todoLists = useSelector<allStateType, Array<todoListType>>( state => state.todo )
 
@@ -34,6 +34,7 @@ function App() {
         <Grid item key={ m.id }>
             <TodoList todoListId={ m.id }
                       title={ m.title }
+                      todoStatus={ m.todoStatus }
             />
         </Grid> )
 

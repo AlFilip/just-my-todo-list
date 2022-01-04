@@ -3,25 +3,26 @@ import s from './TodoList.module.css'
 import { TodoListTitle } from "./TodoListTitle"
 import { useDispatch, useSelector } from "react-redux"
 import { allStateType } from "../../redux/store"
-import { createTask, deleteTask, initTasks, taskType, updateTask } from "../../reducers/tasksReducer"
+import { createTask, deleteTask, fetchTasks, taskType, updateTask } from "../../reducers/tasksReducer"
 import { Button, ButtonGroup } from "@mui/material"
 import { AddItemForm } from "../Common/AdditemForm/AddItemForm"
 import { AlternativeTasks } from "./Tasks/AlternativeTasks/AlternativeTasks"
 import { removeTodoList, updateTodoTitle } from "../../reducers/todoListReducer"
 import { TaskStatuses } from '../../Api/Api'
+import { statusType } from '../../reducers/appReducer'
 
 
 type TodoListPropsType = {
     todoListId: string
     title: string
-    // filter: filterValueType
+    todoStatus: statusType
 }
 export type filterValueType = 'All' | 'Completed' | 'Active'
 
 export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
                                                                       todoListId,
                                                                       title,
-                                                                      // filter,
+                                                                      todoStatus,
                                                                       // tasks,
                                                                       ...props
                                                                   }) => {
@@ -43,7 +44,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
     }, [tasks, todoListFilter] )
 
     useEffect( () => {
-        dispatch( initTasks( todoListId ) )
+        dispatch( fetchTasks( todoListId ) )
     }, [dispatch, todoListId] )
 
     const removeTodo = useCallback( () => {
@@ -55,7 +56,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
     }, [dispatch, todoListId] )
 
     const addTask = useCallback( (title: string) => {
-        dispatch( createTask( todoListId, title ) )
+        dispatch( createTask( { todoListId, title } ) )
     }, [dispatch, todoListId] )
 
     const removeTask = useCallback( (taskId: string) => {
@@ -102,13 +103,14 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
             <TodoListTitle title={ title }
                            callBack={ removeTodo }
                            onChangeCallBack={ changeTodoTitle }
+                           disabled={todoStatus === 'loading'}
             />
             <AddItemForm callBack={ addTask } placeHolder={ 'Enter new task name' }/>
             <AlternativeTasks tasks={ filteredTasks }
                               renameTask={ renameTask }
                               changeIsDone={ changeIsDone }
                               removeTask={ removeTask }
-            />
+                                          />
 
             <div className={ s.filters }>
                 <ButtonGroup variant="outlined" size='small'>

@@ -4,12 +4,12 @@ import { getTodos } from './todoListReducer'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 
-export type AppStatusType = 'idle' | 'loading'
+export type statusType = 'idle' | 'loading'
 
 
 const initState = {
     isInit: false,
-    status: 'loading' as AppStatusType,
+    status: 'loading' as statusType,
     error: null as null | string,
 }
 type appStateType = typeof initState
@@ -22,7 +22,7 @@ const slice = createSlice( {
             state.isInit = true
             state.status = 'idle'
         },
-        setAppStatus(state: appStateType, { payload: { status } }: PayloadAction<{ status: AppStatusType }>) {
+        setAppStatus(state: appStateType, { payload: { status } }: PayloadAction<{ status: statusType }>) {
             state.status = status
         },
         setError(state: appStateType, { payload: { error } }: PayloadAction<{ error: string | null }>) {

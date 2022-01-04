@@ -1,5 +1,4 @@
 import axios from "axios"
-import { todoListType } from "../reducers/todoListReducer"
 import { taskType } from "../reducers/tasksReducer"
 
 
@@ -52,6 +51,13 @@ export const authApi = {
 
 }
 
+export type domainTodoListType = {
+    id: string
+    title: string
+    addedDate: string
+    order: number
+}
+
 type todoDataType = {
     item: {
         id: string
@@ -62,7 +68,7 @@ type todoDataType = {
 }
 
 export const todoListApi = {
-    getTodoLists: () => axiosTodoReq.get<todoListType[]>( '' ),
+    getTodoLists: () => axiosTodoReq.get<domainTodoListType[]>( '' ),
 
     createTodoList: (title: string) => {
         return axiosTodoReq.post<commonResponseType<todoDataType>>( '', { title } )
