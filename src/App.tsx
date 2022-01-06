@@ -9,6 +9,7 @@ import { addTodoList, todoListType } from "./reducers/todoListReducer"
 import { initApp, statusType } from './reducers/appReducer'
 import LinearProgress from '@mui/material/LinearProgress'
 import { ErrorSnackbar } from './Components/Common/ErrorSnackBar/ErrorSnackBar'
+import { Login } from './Components/Login/Login'
 
 
 function App() {
@@ -70,9 +71,13 @@ function App() {
             </Box>
 
             <Container>
-                <Grid container>
-                    { mappedTodoLists }
-                </Grid>
+                {
+                    isAuth
+                        ? <Grid container>
+                            { mappedTodoLists }
+                        </Grid>
+                        : <Login/>
+                }
                 <ErrorSnackbar/>
             </Container>
         </div>

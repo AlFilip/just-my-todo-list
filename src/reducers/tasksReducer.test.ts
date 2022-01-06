@@ -1,11 +1,5 @@
 import { v1 } from "uuid"
-import tasksReducer, {
-    addTaskToState, fetchTasks,
-    removeTaskFromState,
-    tasksStateType,
-    taskType,
-    updateTaskInState,
-} from "./tasksReducer"
+import tasksReducer, { createTask, deleteTask, fetchTasks, tasksStateType, taskType, updateTask } from "./tasksReducer"
 import { TaskStatuses } from '../Api/Api'
 
 
@@ -57,16 +51,19 @@ beforeEach( () => {
 } )
 
 test( 'Set tasks to state', () => {
-    const action = fetchTasks.fulfilled({todoListId: todoListId1, items:[task]},'' ,todoListId1)
-    const endState = tasksReducer(startState, action)
-    expect(endState).not.toBe(startState)
-    expect(endState[todoListId1].length).toBe(1)
-    expect(endState[todoListId1][0]).toBe(task)
-    expect(endState[todoListId1][0]).toEqual(task)
-})
+    const action = fetchTasks.fulfilled( { todoListId: todoListId1, items: [task] }, '', todoListId1 )
+    const endState = tasksReducer( startState, action )
+    expect( endState ).not.toBe( startState )
+    expect( endState[todoListId1].length ).toBe( 1 )
+    expect( endState[todoListId1][0] ).toBe( task )
+    expect( endState[todoListId1][0] ).toEqual( task )
+} )
 
 test( 'Adding task test', () => {
-    const action = addTaskToState( { item: task, todoListId: todoListId1 } )
+    const action = createTask.fulfilled( { item: task, todoListId: todoListId1 }, '', {
+        title: 'title',
+        todoListId: todoListId1,
+    } )
 
     const endState = tasksReducer( startState, action )
 
@@ -76,7 +73,10 @@ test( 'Adding task test', () => {
 } )
 
 test( 'Remove task test', () => {
-    const action = removeTaskFromState( { todoListId: todoListId1, taskId: startState[todoListId1][0].id } )
+    const action = deleteTask.fulfilled( {
+        todoListId: todoListId1,
+        taskId: startState[todoListId1][0].id,
+    }, '', { todoListId: todoListId1, taskId: startState[todoListId1][0].id } )
 
     const endState = tasksReducer( startState, action )
 
@@ -87,10 +87,10 @@ test( 'Remove task test', () => {
 } )
 
 test( 'Rename task test', () => {
-    const action = updateTaskInState( {
+    const action = updateTask.fulfilled( {
         todoListId: todoListId1,
         task: { ...startState[todoListId1][0], title: 'title' },
-    } )
+    }, '', { task: startState[todoListId1][0], todoListId: todoListId1 } )
 
     const endState = tasksReducer( startState, action )
 
@@ -102,10 +102,10 @@ test( 'Rename task test', () => {
 } )
 
 test( 'Changing task status test', () => {
-    const action = updateTaskInState( {
+    const action = updateTask.fulfilled( {
         todoListId: todoListId1,
         task: { ...startState[todoListId1][0], status: TaskStatuses.Completed },
-    } )
+    }, '', { task: startState[todoListId1][0], todoListId: todoListId1 } )
 
     const endState = tasksReducer( startState, action )
 

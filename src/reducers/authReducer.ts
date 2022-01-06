@@ -1,42 +1,55 @@
-import { thunkType } from '../redux/store'
 import { authApi, resCodes } from '../Api/Api'
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 
 const initState = {
     isAuth: false,
-    email: null,
-    id: null,
-    login: null,
+    email: null as null | string,
+    id: null as null | number,
+    login: null as null | string,
 }
 
 const slice = createSlice( {
     name: 'auth',
     initialState: initState,
-    reducers: {
-        setAuthDate(state, action) {
-            state = action.payload
-        },
-    },
+    reducers: {},
+    extraReducers( {addCase } ){
+        addCase( getAuth.fulfilled, (state, action) => {
+            if (action.payload) {
+                return action.payload
+            }
+        })
+    }
 } )
 
 const authReducer = slice.reducer
 
-const { setAuthDate } = slice.actions
-
-
-export const initAuthData = (): thunkType => async dispatch => {
+export const getAuth = createAsyncThunk('auth/getAuth', async (arg, thunkAPI) => {
+    const {dispatch, rejectWithValue} = thunkAPI
     try {
-
         const { data: { data, resultCode }, status } = await authApi.me()
         if (status === 200 && resultCode === resCodes.success) {
-            dispatch( setAuthDate( { ...data, isAuth: true } ) )
-            return true
+            return { ...data, isAuth: true }
+            // dispatch( setAuthDate( { ...data, isAuth: true } ) )
+            // return true
         }
     } catch (e) {
-        console.log( e )
+        return rejectWithValue( e )
     }
-}
+})
+
+// export const getAuth_ = (): thunkType => async dispatch => {
+//     try {
+//
+//         const { data: { data, resultCode }, status } = await authApi.me()
+//         if (status === 200 && resultCode === resCodes.success) {
+//             dispatch( setAuthDate( { ...data, isAuth: true } ) )
+//             return true
+//         }
+//     } catch (e) {
+//         console.log( e )
+//     }
+// }
 
 
 export default authReducer

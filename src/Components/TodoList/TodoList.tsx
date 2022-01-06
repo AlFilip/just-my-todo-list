@@ -7,7 +7,7 @@ import { createTask, deleteTask, fetchTasks, taskType, updateTask } from "../../
 import { Button, ButtonGroup } from "@mui/material"
 import { AddItemForm } from "../Common/AdditemForm/AddItemForm"
 import { AlternativeTasks } from "./Tasks/AlternativeTasks/AlternativeTasks"
-import { removeTodoList, updateTodoTitle } from "../../reducers/todoListReducer"
+import { removeTodoList, updateTodoName } from "../../reducers/todoListReducer"
 import { TaskStatuses } from '../../Api/Api'
 import { statusType } from '../../reducers/appReducer'
 
@@ -52,7 +52,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
     }, [dispatch, todoListId] )
 
     const changeTodoTitle = useCallback( (title: string) => {
-        dispatch( updateTodoTitle( todoListId, title ) )
+        dispatch( updateTodoName( { id: todoListId, title } ) )
     }, [dispatch, todoListId] )
 
     const addTask = useCallback( (title: string) => {
@@ -60,7 +60,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
     }, [dispatch, todoListId] )
 
     const removeTask = useCallback( (taskId: string) => {
-        dispatch( deleteTask( todoListId, taskId ) )
+        dispatch( deleteTask( { todoListId, taskId } ) )
     }, [dispatch, todoListId] )
 
     const renameTask = useCallback( (taskId: string, title: string) => {
@@ -68,7 +68,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
             return f.id === taskId
         } )
         if (task) {
-            dispatch( updateTask( todoListId, { ...task, title } ) )
+            dispatch( updateTask( { todoListId, task: { ...task, title } }) )
         }
     }, [dispatch, todoListId, filteredTasks] )
 
@@ -77,9 +77,11 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
             return f.id === taskId
         } )
         if (task) {
-            dispatch( updateTask( todoListId, {
-                ...task,
-                status: ( task.status === TaskStatuses.Completed ) ? TaskStatuses.New : TaskStatuses.Completed,
+            dispatch( updateTask( {
+                todoListId, task: {
+                    ...task,
+                    status: ( task.status === TaskStatuses.Completed ) ? TaskStatuses.New : TaskStatuses.Completed,
+                },
             } ) )
         }
     }, [dispatch, todoListId, filteredTasks] )

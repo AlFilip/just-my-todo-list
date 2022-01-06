@@ -1,7 +1,6 @@
-import { thunkType } from '../redux/store'
-import { initAuthData } from './authReducer'
+import { getAuth } from './authReducer'
 import { getTodos } from './todoListReducer'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 
 export type statusType = 'idle' | 'loading'
@@ -34,17 +33,30 @@ const slice = createSlice( {
 const appReducer = slice.reducer
 export const { setInit, setAppStatus, setError } = slice.actions
 
-
-export const initApp = (): thunkType => async dispatch => {
+export const initApp = createAsyncThunk('app/initApp',  async (arg, thunkAPI) => {
+    const {dispatch, rejectWithValue} = thunkAPI
     try {
-        const isAuthCompleted = await dispatch( initAuthData() )
-        isAuthCompleted && dispatch( getTodos() )
+        const isAuthCompleted = await dispatch( getAuth() )
+        if (isAuthCompleted) {
+            dispatch( getTodos() )
+        }
     } catch (e) {
-        console.log( e )
+        return rejectWithValue( e )
     } finally {
         dispatch( setAppStatus( { status: 'idle' } ) )
     }
-}
+})
+//
+// export const initApp_ = (): thunkType => async dispatch => {
+//     try {
+//         const isAuthCompleted = await dispatch( getAuth() )
+//         isAuthCompleted && dispatch( getTodos() )
+//     } catch (e) {
+//         console.log( e )
+//     } finally {
+//         dispatch( setAppStatus( { status: 'idle' } ) )
+//     }
+// }
 
 export default appReducer
 
