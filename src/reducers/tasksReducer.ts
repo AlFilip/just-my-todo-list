@@ -2,6 +2,7 @@ import { resCodes, tasksApi, TaskStatuses } from "../Api/Api"
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { setAppStatus } from './appReducer'
 import { addTodoList, removeTodoList } from './todoListReducer'
+import { logout } from './authReducer'
 
 
 export type taskType = {
@@ -73,6 +74,9 @@ const slice = createSlice( {
                 tasks.splice( index, 1, task )
             }
         } )
+        addCase(logout.fulfilled, () => {
+            return {}
+        })
 
     },
 } )

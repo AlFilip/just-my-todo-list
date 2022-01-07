@@ -3,15 +3,17 @@ import Input from '@mui/material/Input'
 import Button from '@mui/material/Button'
 import { useDispatch } from 'react-redux'
 import { selectIsAuth, useAppSelector } from '../../helpers/selectors/selectors'
+import { login } from '../../reducers/authReducer'
+import Checkbox from '@mui/material/Checkbox/Checkbox'
 
 
 export const Login = () => {
     const [email, setEmail] = useState( '' )
     const [password, setPassword] = useState( '' )
-    const IsAuth = useAppSelector( selectIsAuth )
+    const [rememberMe, setRememberMe] = useState( false )
     const dispatch = useDispatch()
     const buttonClickHandle = () => {
-        dispatch( {} )
+        dispatch( login( { email, password, rememberMe } ) )
 
     }
 
@@ -31,7 +33,13 @@ export const Login = () => {
                    value={ password }
                    onChange={ e => setPassword( e.currentTarget.value ) }
             />
-            <Button> Send </Button>
+
+            <Checkbox checked={ rememberMe }
+                      onChange={ () => setRememberMe( !rememberMe ) }
+
+
+            />
+            <Button onClick={buttonClickHandle}> Send </Button>
             {/*</FormControl>*/ }
         </>
     )

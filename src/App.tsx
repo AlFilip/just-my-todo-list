@@ -10,6 +10,7 @@ import { initApp, statusType } from './reducers/appReducer'
 import LinearProgress from '@mui/material/LinearProgress'
 import { ErrorSnackbar } from './Components/Common/ErrorSnackBar/ErrorSnackBar'
 import { Login } from './Components/Login/Login'
+import { logout } from './reducers/authReducer'
 
 
 function App() {
@@ -31,12 +32,13 @@ function App() {
         dispatch( addTodoList( title ) )
     }, [dispatch] )
 
+    const logoutHandle = () => dispatch(logout())
+
     const mappedTodoLists = todoLists.map( m =>
         <Grid item key={ m.id }>
             <TodoList todoListId={ m.id }
                       title={ m.title }
-                      todoStatus={ m.todoStatus }
-            />
+                      todoStatus={ m.todoStatus }/>
         </Grid> )
 
     return (
@@ -58,7 +60,12 @@ function App() {
                         <AddItemForm callBack={ addTodo } buttonTitle={ 'Add TodoList' }
                                      placeHolder={ 'Enter new to-do list name' }/>
                         { isAuth
-                            ? login
+                            ? <>
+                                { login }
+                                <Button onClick={logoutHandle} color="inherit">
+                                    Logout
+                                </Button>
+                            </>
                             : <Button color="inherit">
                                 Login
                             </Button>

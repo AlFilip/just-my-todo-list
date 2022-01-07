@@ -1,7 +1,7 @@
 import { domainTodoListType, resCodes, todoListApi } from "../Api/Api"
-import { thunkType } from '../redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { setAppStatus, setError, setInit, statusType } from "./appReducer"
+import { setAppStatus, setInit, statusType } from "./appReducer"
+import { logout } from './authReducer'
 
 
 export type todoListType = domainTodoListType & {
@@ -31,21 +31,24 @@ const slice = createSlice( {
                 state.splice( index, 1 )
             }
         } )
-        addCase(updateTodoName.fulfilled, (state, action) => {
-            if (action.payload){
-                const {id, title} = action.payload
+        addCase( updateTodoName.fulfilled, (state, action) => {
+            if (action.payload) {
+                const { id, title } = action.payload
                 const todo = state.find( f => f.id === id )
                 if (todo) {
                     todo.title = title
                 }
             }
-        })
-        addCase(getTodos.fulfilled, (state, action) => {
-            if (action.payload){
-                const {items} = action.payload
-                return [...items]  as todoListType[]
+        } )
+        addCase( getTodos.fulfilled, (state, action) => {
+            if (action.payload) {
+                const { items } = action.payload
+                return [...items] as todoListType[]
             }
-        })
+        } )
+        addCase( logout.fulfilled, () => {
+            return []
+        } )
     },
 } )
 
@@ -73,55 +76,18 @@ export const addTodoList = createAsyncThunk( 'todo/addTodoList', async (title: s
     }
 } )
 
-// export const addTodoList_ = (title: string): thunkType => async dispatch => {
-//     try {
-//         dispatch( setAppStatus( { status: 'loading' } ) )
-//         const { status, data: { data: { item }, resultCode, messages: [errorMessage] } } = await todoListApi.createTodoList( title )
-//         if (status === 200 && resultCode === resCodes.success) {
-//             dispatch( addTodoToState( { item } ) )
-//         }
-//         errorMessage
-//         && dispatch( setError( { error: errorMessage } ) )
-//     } catch (e) {
-//         console.log( e )
-//     } finally {
-//         dispatch( setAppStatus( { status: 'idle' } ) )
-//     }
-//
-// }
-
-
-export const getTodos = createAsyncThunk('todo/getTodos', async (ar, thunkAPI) => {
-    const {dispatch, rejectWithValue} = thunkAPI
+export const getTodos = createAsyncThunk( 'todo/getTodos', async (ar, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI
     try {
-        dispatch( setAppStatus( { status: 'loading' } ) )
         const { data, status } = await todoListApi.getTodoLists()
-        if (status === 200 && data.length) {
-            dispatch( setInit() )
-            return { items: data.map( m => ( { ...m, todoStatus: 'idle' } ) ) }
-            // dispatch( setTodoListsToState( { items: data.map( m => ( { ...m, todoStatus: 'idle' } ) ) } ) )
-        }
+        dispatch( setInit() )
+        return { items: data.map( m => ( { ...m, todoStatus: 'idle' } ) ) }
+        // dispatch( setTodoListsToState( { items: data.map( m => ( { ...m, todoStatus: 'idle' } ) ) } ) )
+        
     } catch (e) {
-        return rejectWithValue(e)
-    } finally {
-        dispatch( setAppStatus( { status: 'idle' } ) )
+        return rejectWithValue( e )
     }
-})
-
-// export const getTodos_ = (): thunkType => async dispatch => {
-//     try {
-//         dispatch( setAppStatus( { status: 'loading' } ) )
-//         const { data, status } = await todoListApi.getTodoLists()
-//         if (status === 200 && data.length) {
-//             dispatch( setTodoListsToState( { items: data.map( m => ( { ...m, todoStatus: 'idle' } ) )  } ) )
-//             dispatch( setInit() )
-//         }
-//     } catch (e) {
-//         console.log( e )
-//     } finally {
-//         dispatch( setAppStatus( { status: 'idle' } ) )
-//     }
-// }
+} )
 
 export const removeTodoList = createAsyncThunk( 'todo/removeTodoList', async (id: string, thunkApi) => {
     const { rejectWithValue, dispatch } = thunkApi
@@ -174,7 +140,7 @@ export const updateTodoName = createAsyncThunk( 'todo/updateTodo', async (arg: {
             // dispatch( renameTodoInState( { id, title } ) )
         }
         if (errorMessage) {
-             return rejectWithValue({ error: errorMessage })
+            return rejectWithValue( { error: errorMessage } )
         }
         // errorMessage
         // && dispatch( setError( { error: errorMessage } ) )

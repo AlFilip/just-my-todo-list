@@ -46,9 +46,30 @@ export type authMeDataType = {
     "email": string
 }
 
+export type loginPayloadType = {
+    email: string
+    password: string
+    rememberMe?: boolean
+    captcha?: string
+}
+
+type loginResponseType = {
+    "data": {
+        "userId": number
+    },
+    "messages": string[],
+    "fieldsErrors": [],
+    "resultCode": resCodes
+}
+
 export const authApi = {
     me: () => axiosAuthReq.get<commonResponseType<authMeDataType>>( 'me' ),
-
+    login(payload: loginPayloadType) {
+        return axiosAuthReq.post<loginResponseType>( 'login', payload )
+    },
+    logout() {
+        return axiosAuthReq.delete( 'login' )
+    },
 }
 
 export type domainTodoListType = {

@@ -41,7 +41,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
             case "Completed":
                 return tasks.filter( f => f.status === TaskStatuses.Completed )
         }
-    }, [tasks, todoListFilter] )
+    }, [tasks, todoListFilter, todoStatus] )
 
     useEffect( () => {
         dispatch( fetchTasks( todoListId ) )
@@ -96,9 +96,11 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
         .map( m => <Button key={ m }
                            variant={ todoListFilter === m ? 'contained' : 'outlined' }
                            data-filter={ m }
-                           onClick={ changeFilter }>{ m }
+                           onClick={ changeFilter }
+                           disabled={todoStatus === 'loading'}
+            >{ m }
             </Button>,
-        ), [todoListFilter],
+        ), [todoListFilter, todoStatus],
     )
     return (
         <div className={ s.todoList }>
@@ -107,11 +109,12 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
                            onChangeCallBack={ changeTodoTitle }
                            disabled={todoStatus === 'loading'}
             />
-            <AddItemForm callBack={ addTask } placeHolder={ 'Enter new task name' }/>
+            <AddItemForm callBack={ addTask } placeHolder={ 'Enter new task name' } disabled={todoStatus === 'loading'}/>
             <AlternativeTasks tasks={ filteredTasks }
                               renameTask={ renameTask }
                               changeIsDone={ changeIsDone }
                               removeTask={ removeTask }
+                              todoStatus={todoStatus}
                                           />
 
             <div className={ s.filters }>

@@ -9,11 +9,13 @@ type EditableSpanPropsType = {
     autoFocus?: boolean
     discardOnBlur?: boolean
     placeHolder?: string
+    disabled?: boolean
 }
 export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
                                                                             title,
                                                                             callBack,
                                                                             buttonTitle,
+                                                                            disabled,
                                                                             ...props
                                                                         }) => {
 
@@ -61,6 +63,7 @@ export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
                        onChange={onTitleChangeHandler}
                        autoFocus={props.autoFocus}
                        onBlur={onBlurHandler}
+                       disabled={disabled}
             />
 
             {buttonTitle
@@ -68,6 +71,7 @@ export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
                        color="success"
                        size="small"
                        onClick={saveChanges}
+                       disabled={disabled}
             >{buttonTitle}</Button>}
         </>
 

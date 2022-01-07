@@ -1,4 +1,4 @@
-import { getAuth } from './authReducer'
+import { getAuth, login, logout } from './authReducer'
 import { getTodos } from './todoListReducer'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
@@ -28,6 +28,29 @@ const slice = createSlice( {
             state.error = error
         },
     },
+    extraReducers: ({addCase}) => {
+        addCase(logout.pending, (state) => {
+            state.status = 'loading'
+        })
+        addCase(logout.fulfilled, state => {
+            state.status = 'idle'
+        })
+        addCase(logout.rejected, state => {
+            state.status = 'idle'
+        })
+        addCase(login.pending, state => {
+            state.status = 'loading'
+        })
+        addCase( initApp.rejected, state => {
+            state.status = 'idle'
+        })
+        addCase( getAuth.rejected, state => {
+            state.status = 'idle'
+        })
+        addCase( getTodos.rejected, state => {
+            state.status = 'idle'
+        })
+    }
 } )
 
 const appReducer = slice.reducer
@@ -36,14 +59,12 @@ export const { setInit, setAppStatus, setError } = slice.actions
 export const initApp = createAsyncThunk('app/initApp',  async (arg, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
     try {
-        const isAuthCompleted = await dispatch( getAuth() )
-        if (isAuthCompleted) {
+        const { payload } = await dispatch( getAuth() )
+        if (payload) {
             dispatch( getTodos() )
         }
     } catch (e) {
         return rejectWithValue( e )
-    } finally {
-        dispatch( setAppStatus( { status: 'idle' } ) )
     }
 })
 //

@@ -4,6 +4,7 @@ import { Checkbox, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemT
 import EditIcon from '@mui/icons-material/Edit'
 import { AddItemForm } from "../../../Common/AdditemForm/AddItemForm"
 import { TaskStatuses } from '../../../../Api/Api'
+import { statusType } from '../../../../reducers/appReducer'
 
 
 export type TaskPropsType = {
@@ -13,6 +14,7 @@ export type TaskPropsType = {
     removeTask: (taskId: string) => void
     renameTask: (taskId: string, title: string) => void
     changeIsDone: (taskId: string) => void
+    todoStatus: statusType
 }
 
 export const AlternativeTask: React.FC<TaskPropsType> = ({
@@ -22,6 +24,7 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
                                                              removeTask,
                                                              renameTask,
                                                              changeIsDone,
+                                                             todoStatus,
                                                          }) => {
 
     // console.log('Task')
@@ -33,6 +36,7 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
 
     const killTask: MouseEventHandler<HTMLButtonElement> = (e) => {
         removeTask( id )
+        console.log(todoStatus)
         e.stopPropagation()
     }
     const [editMode, setEditMode] = useState( false )
@@ -47,7 +51,7 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
             key={ id }
             secondaryAction={
                 !editMode
-                && <IconButton color="primary" size='small' onClick={ killTask }>
+                && <IconButton color="primary" size='small' onClick={ killTask } disabled={ todoStatus === 'loading' }>
                     <Delete/>
                 </IconButton>
             }
@@ -64,12 +68,13 @@ export const AlternativeTask: React.FC<TaskPropsType> = ({
             && <ListItemButton key={ id } id={ id } onClick={ onChangeCheckedHandler }>
 
                 <ListItemIcon sx={ { minWidth: '36px' } }>
-                    <Checkbox checked={ status === TaskStatuses.Completed } sx={ { padding: 0 } }/>
+                    <Checkbox checked={ status === TaskStatuses.Completed } sx={ { padding: 0 } } disabled={todoStatus === 'loading'}/>
                 </ListItemIcon>
 
                 <ListItemText primary={ title }/>
 
-                <IconButton edge="end" color="primary" size='small' onClick={ editIconOnClickHandler }>
+                <IconButton edge="end" color="primary" size='small' onClick={ editIconOnClickHandler }
+                            disabled={ todoStatus === 'loading' }>
                     <EditIcon/>
                 </IconButton>
 
