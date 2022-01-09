@@ -1,5 +1,6 @@
 import * as authSelectors from './selectors'
 import { slice, asyncActions } from './authReducer'
+import { Login } from './Login'
 
 
 const authReducer = slice.reducer
@@ -11,5 +12,6 @@ const authActions = {
 export {
     authSelectors,
     authReducer,
-    authActions
+    authActions,
+    Login
 }

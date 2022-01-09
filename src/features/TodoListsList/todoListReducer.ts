@@ -2,7 +2,7 @@ import { domainTodoListType, resCodes, todoListApi } from "../../Api/Api"
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { authActions } from '../Auth'
 import { tasksActions} from './'
-import { statusType } from '../Application/appReducer'
+import { statusType } from '../../utils/types'
 
 
 export type todoListType = domainTodoListType & {

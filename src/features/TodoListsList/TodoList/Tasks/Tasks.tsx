@@ -1,10 +1,10 @@
 import React, { useMemo } from "react"
 import { List } from "@mui/material"
 import { Task } from "./Task/Task"
-import { statusType } from '../../../Application/appReducer'
 import { TaskStatuses } from '../../../../Api/Api'
 import { filterValueType } from '../../TodoList'
 import { useAppSelector } from '../../../../utils/redux-utils'
+import { statusType } from '../../../../utils/types'
 
 
 type AlternativeTasksPropsType = {

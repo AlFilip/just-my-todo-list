@@ -1,15 +1,9 @@
 import { authActions } from '../Auth'
 import { todosActions } from '../TodoListsList'
-import { AnyAction, AsyncThunk, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AnyAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { FulfilledAction, PendingAction, RejectedAction, statusType } from '../../utils/types'
 
 
-export type statusType = 'idle' | 'loading'
-
-type appStateType = ReturnType<typeof slice.reducer>
-type GenericAsyncThunk = AsyncThunk<unknown, unknown, any>
-type PendingAction = ReturnType<GenericAsyncThunk['pending']>
-type RejectedAction = ReturnType<GenericAsyncThunk['rejected']>
-type FulfilledAction = ReturnType<GenericAsyncThunk['fulfilled']>
 function isPendingAction(action: AnyAction): action is PendingAction {
     return action.type.endsWith('/pending')
 }
@@ -21,6 +15,7 @@ function isRejectedAction(action: AnyAction): action is RejectedAction {
 }
 
 const ignoreIdleActionsTypes = [`auth/getAuth`, 'auth/login']
+
 const checkMatch = (type: string) => {
     for (let item of ignoreIdleActionsTypes){
         if (type.match(item)){
@@ -39,6 +34,8 @@ function setIdle(state: appStateType, action: PayloadAction) {
 function setLoading(state: appStateType) {
     state.status = 'loading'
 }
+
+export type appStateType = ReturnType<typeof slice.reducer>
 
 export const slice = createSlice( {
     name: 'app',

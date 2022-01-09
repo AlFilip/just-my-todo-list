@@ -4,10 +4,10 @@ import { Checkbox, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemT
 import EditIcon from '@mui/icons-material/Edit'
 import { AddItemForm } from "../../../../../Components/AdditemForm/AddItemForm"
 import { TaskStatuses } from '../../../../../Api/Api'
-import { statusType } from '../../../../Application/appReducer'
 import { tasksActions } from '../../../'
 import { taskType } from '../../../tasksReducer'
 import { useActions } from '../../../../../utils/redux-utils'
+import { statusType } from '../../../../../utils/types'
 
 
 export type TaskPropsType = {

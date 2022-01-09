@@ -5,9 +5,8 @@ import { TodoListTitle } from "./TodoList/TodoListTitle"
 import { tasksActions, todosActions } from "./"
 import { AddItemForm } from "../../Components/AdditemForm/AddItemForm"
 import { Tasks } from "./TodoList/Tasks/Tasks"
-import { statusType } from '../Application/appReducer'
 import { useActions } from '../../utils/redux-utils'
-
+import { statusType } from '../../utils/types'
 
 type TodoListPropsType = {
     todoListId: string

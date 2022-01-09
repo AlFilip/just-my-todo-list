@@ -2,7 +2,7 @@ import { domainTaskType, resCodes, tasksApi } from "../../Api/Api"
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { todosActions } from './index'
 import { authActions } from '../Auth'
-import { statusType } from '../Application/appReducer'
+import { statusType } from '../../utils/types'
 
 
 export type taskType = domainTaskType & {
