@@ -1,5 +1,5 @@
 import axios from "axios"
-import { taskType } from "../reducers/tasksReducer"
+import { taskType } from "../features/TodoListsList/tasksReducer"
 
 
 export enum resCodes {
@@ -104,8 +104,21 @@ export const todoListApi = {
 }
 
 
+export type domainTaskType = {
+    description: string | null
+    title: string
+    status: TaskStatuses
+    priority: number
+    startDate: string | null
+    deadline: string | null
+    id: string
+    todoListId: string
+    order: number
+    addedDate: string
+}
+
 type getTasksResponseType = {
-    items: taskType[]
+    items: domainTaskType[]
     totalCount: number
     error: null | string
     fieldsErrors: any[]
@@ -116,7 +129,7 @@ export const tasksApi = {
         return axiosTodoReq.get<getTasksResponseType>( `/${ todoListId }/tasks` )
     },
     addTask: (todoListId: string, title: string) => {
-        return axiosTodoReq.post<commonResponseType<{ item: taskType }>>( `${ todoListId }/tasks`, { title } )
+        return axiosTodoReq.post<commonResponseType<{ item: domainTaskType }>>( `${ todoListId }/tasks`, { title } )
     },
     deleteTask: (todoListId: string, taskId: string) => {
         return axiosTodoReq.delete<commonResponseType>( `${ todoListId }/tasks/${ taskId }` )
