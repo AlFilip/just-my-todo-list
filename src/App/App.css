@@ -2,8 +2,7 @@
 /*    background-color: #a3a3a3;*/
 /*}*/
 
-/*.App {*/
-/*    display: flex;*/
-/*    padding: 20px;*/
-/*    font-size: 1.3rem;*/
-/*}*/
+.App {
+    background-color: #D7D7D6;
+    min-height: 100vh;
+}

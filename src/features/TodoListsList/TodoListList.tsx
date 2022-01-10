@@ -9,7 +9,7 @@ export const TodoListsList = () => {
     const todoLists = useAppSelector( todosSelectors.selectTodos )
 
     const mappedTodoLists = todoLists.map( m =>
-        <Grid item key={ m.id } style={{maxWidth: 350}}>
+        <Grid item key={ m.id }>
             <TodoList todoListId={ m.id }
                       title={ m.title }
                       todoStatus={ m.todoStatus }/>

@@ -8,6 +8,9 @@ import { tasksActions } from '../../../'
 import { taskType } from '../../../tasksReducer'
 import { useActions } from '../../../../../utils/redux-utils'
 import { statusType } from '../../../../../utils/types'
+import { MyTheme } from '../../../../../utils/theme'
+import ThemeProvider from '@mui/material/styles/ThemeProvider'
+import s from './Task.module.css'
 
 
 export type TaskPropsType = {
@@ -20,8 +23,9 @@ export const Task: React.FC<TaskPropsType> = React.memo( ({
                                                               taskEntity,
                                                           }) => {
     const [editMode, setEditMode] = useState( false )
+    const [active, setActive] = useState( true )
     const { id, title, fetchStatus, todoListId, status } = taskEntity
-    const { updateTask, deleteTask } = useActions(tasksActions)
+    const { updateTask, deleteTask } = useActions( tasksActions )
 
     console.log( 'task', id )
 
@@ -68,39 +72,49 @@ export const Task: React.FC<TaskPropsType> = React.memo( ({
     const isComponentDisabled = todoStatus === 'loading' || fetchStatus === 'loading'
 
     return (
-        <ListItem
-            key={ id }
-            secondaryAction={
-                !editMode
-                && <IconButton color="primary" size='small' onClick={ killTask } disabled={ isComponentDisabled }>
-                    <Delete/>
-                </IconButton>
-            }
-            disablePadding
-            disableGutters
-        >
-            { editMode
-            && <AddItemForm callBack={ renameTask } title={ title }
-                            autoFocus
-                            discardOnBlur
-                            placeHolder={ 'Enter new task name' }
-            /> }
-            { !editMode
-            && <ListItemButton key={ id } id={ id } onClick={ onChangeCheckedHandler }>
+        <ThemeProvider theme={ MyTheme }>
+            <ListItem
+                key={ id }
+                disablePadding
+                disableGutters
+                sx={ {
+                    maxWidth: '13rem',
+                } }
+                onMouseEnter={ () => setActive( true ) }
+                onMouseLeave={ () => setActive( false ) }
+            >
+                { editMode
+                && <AddItemForm callBack={ renameTask } title={ title }
+                                autoFocus
+                                discardOnBlur
+                                placeHolder={ 'Enter new task name' }
+                /> }
+                { !editMode
+                && <ListItemButton key={ id } id={ id } onClick={ onChangeCheckedHandler }>
 
-                <ListItemIcon sx={ { minWidth: '36px' } }>
-                    <Checkbox checked={ status === TaskStatuses.Completed } sx={ { padding: 0 } }
-                              disabled={ isComponentDisabled }/>
-                </ListItemIcon>
+                    <ListItemIcon>
+                        <Checkbox checked={ status === TaskStatuses.Completed }
+                                  disabled={ isComponentDisabled }/>
+                    </ListItemIcon>
 
-                <ListItemText primary={ title }/>
+                    <ListItemText primary={ title }/>
+                    {
+                        active && !editMode
+                        &&
+                        <div className={ s.actions }>
+                            <IconButton edge="end" color="primary" size='small' onClick={ editIconOnClickHandler }
+                                        disabled={ isComponentDisabled }>
+                                <EditIcon/>
+                            </IconButton>
+                            <IconButton color="primary" size='small' sx={ { float: 'right' } }
+                                        onClick={ killTask } disabled={ isComponentDisabled }>
+                                <Delete/>
+                            </IconButton>
+                        </div>
+                    }
+                </ListItemButton> }
 
-                <IconButton edge="end" color="primary" size='small' onClick={ editIconOnClickHandler }
-                            disabled={ isComponentDisabled }>
-                    <EditIcon/>
-                </IconButton>
-
-            </ListItemButton> }
-        </ListItem>
+            </ListItem>
+        </ThemeProvider>
     )
 } )

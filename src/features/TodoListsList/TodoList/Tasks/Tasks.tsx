@@ -41,7 +41,7 @@ export const Tasks: React.FC<AlternativeTasksPropsType> = React.memo( ({
                                          taskEntity={ m }
         /> ), [filteredTasks, todoStatus] )
     return (
-        <div className={ 's.body' }>
+        <div >
             <List>
                 { mappedTasks }
             </List>

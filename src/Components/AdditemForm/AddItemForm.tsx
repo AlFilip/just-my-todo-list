@@ -1,5 +1,6 @@
-import React, {ChangeEventHandler, KeyboardEventHandler, useState} from "react";
-import {Button, TextField} from "@mui/material";
+import React, { ChangeEventHandler, CSSProperties, KeyboardEventHandler, useState } from "react"
+import { Button, TextField } from "@mui/material"
+
 
 type EditableSpanPropsType = {
     title?: string
@@ -10,27 +11,29 @@ type EditableSpanPropsType = {
     discardOnBlur?: boolean
     placeHolder?: string
     disabled?: boolean
+    style?: CSSProperties
 }
-export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
-                                                                            title,
-                                                                            callBack,
-                                                                            buttonTitle,
-                                                                            disabled,
-                                                                            ...props
-                                                                        }) => {
+export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo( ({
+                                                                             title,
+                                                                             callBack,
+                                                                             buttonTitle,
+                                                                             disabled,
+                                                                             style,
+                                                                             ...props
+                                                                         }) => {
 
     // console.log('EditableSpan')
-    const [titleValue, setTitleValue] = useState(title || '')
+    const [titleValue, setTitleValue] = useState( title || '' )
 
     const saveChanges = () => {
         titleValue
-        && callBack(titleValue)
-        setTitleValue('')
+        && callBack( titleValue )
+        setTitleValue( '' )
     }
     const discardChanges = () => {
-        setTitleValue(title || '')
+        setTitleValue( title || '' )
         title
-        && callBack(title)
+        && callBack( title )
     }
     const onKeyDownHandler: KeyboardEventHandler<HTMLInputElement> = e => {
         switch (e.key) {
@@ -44,7 +47,7 @@ export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
         }
     }
     const onTitleChangeHandler: ChangeEventHandler<HTMLInputElement> = e => {
-        setTitleValue(e.currentTarget.value)
+        setTitleValue( e.currentTarget.value )
     }
 
     const onBlurHandler = () => {
@@ -55,26 +58,27 @@ export const AddItemForm: React.FC<EditableSpanPropsType> = React.memo(({
     return (
         <>
             <TextField color="secondary"
-                       size={'small'}
+                       size={ 'small' }
                        variant="outlined"
-                       placeholder={props.placeHolder || 'Enter here'}
-                       value={titleValue}
-                       onKeyDown={onKeyDownHandler}
-                       onChange={onTitleChangeHandler}
-                       autoFocus={props.autoFocus}
-                       onBlur={onBlurHandler}
-                       disabled={disabled}
+                       placeholder={ props.placeHolder || 'Enter here' }
+                       value={ titleValue }
+                       onKeyDown={ onKeyDownHandler }
+                       onChange={ onTitleChangeHandler }
+                       autoFocus={ props.autoFocus }
+                       onBlur={ onBlurHandler }
+                       disabled={ disabled }
+                       sx={style}
             />
 
-            {buttonTitle
+            { buttonTitle
             && <Button variant="contained"
                        color="success"
                        size="small"
-                       onClick={saveChanges}
-                       disabled={disabled}
-            >{buttonTitle}</Button>}
+                       onClick={ saveChanges }
+                       disabled={ disabled }
+            >{ buttonTitle }</Button> }
         </>
 
 
     )
-})
+} )

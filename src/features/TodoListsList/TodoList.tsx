@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, useCallback, useMemo, useState } from "react"
-import { Button, ButtonGroup } from "@mui/material"
+import { Button, ButtonGroup, Paper } from "@mui/material"
 import s from './TodoList/TodoList.module.css'
 import { TodoListTitle } from "./TodoList/TodoListTitle"
 import { tasksActions, todosActions } from "./"
@@ -7,6 +7,7 @@ import { AddItemForm } from "../../Components/AdditemForm/AddItemForm"
 import { Tasks } from "./TodoList/Tasks/Tasks"
 import { useActions } from '../../utils/redux-utils'
 import { statusType } from '../../utils/types'
+
 
 type TodoListPropsType = {
     todoListId: string
@@ -58,7 +59,14 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
         ), [todoListFilter, todoStatus],
     )
     return (
-        <div className={ s.todoList }>
+        <Paper elevation={ 10 }
+               sx={ {
+                   padding: '0.6rem',
+                   margin: '1rem',
+                   border: '2px solid rgba( 40, 40, 40, 0.3 )',
+                   backgroundColor: '#F3F2F3',
+                   maxWidth: 278,
+               } }>
 
             <TodoListTitle title={ title }
                            callBack={ removeTodo }
@@ -66,7 +74,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
                            disabled={ todoStatus === 'loading' }
             />
 
-            <AddItemForm callBack={ addTask } placeHolder={ 'Enter new task name' }
+            <AddItemForm style={ { width: '100%' } } callBack={ addTask } placeHolder={ 'Enter new task name' }
                          disabled={ todoStatus === 'loading' }/>
 
             <Tasks
@@ -81,6 +89,6 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
                 </ButtonGroup>
             </div>
 
-        </div>
+        </Paper>
     )
 } )
