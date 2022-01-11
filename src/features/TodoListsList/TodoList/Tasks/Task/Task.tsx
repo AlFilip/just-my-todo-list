@@ -23,7 +23,7 @@ export const Task: React.FC<TaskPropsType> = React.memo( ({
                                                               taskEntity,
                                                           }) => {
     const [editMode, setEditMode] = useState( false )
-    const [active, setActive] = useState( true )
+    const [active, setActive] = useState( false )
     const { id, title, fetchStatus, todoListId, status } = taskEntity
     const { updateTask, deleteTask } = useActions( tasksActions )
 

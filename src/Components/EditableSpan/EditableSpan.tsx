@@ -18,7 +18,7 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo( ({
                                                                               ...props
                                                                           }) => {
 
-    // console.log('EditableSpan')
+    console.log( 'EditableSpan' )
     const [titleValue, setTitleValue] = useState( title )
     const [editMode, setEditMode] = useState( isEditMode )
     const toggleEditMode = () => {
@@ -26,14 +26,13 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo( ({
             setEditMode( !editMode )
         }
     }
-
     const saveChanges = () => {
-        titleValue
-        && callBack( titleValue )
-
-        titleValue
-        && toggleEditMode()
+        if (titleValue) {
+            callBack( titleValue )
+        }
+        discardChanges()
     }
+
     const discardChanges = () => {
         toggleEditMode()
         setTitleValue( title )
@@ -54,7 +53,7 @@ export const EditableSpan: React.FC<EditableSpanPropsType> = React.memo( ({
     }
     return (
         <span onDoubleClick={ toggleEditMode }>
-            { !editMode && ( props.children || titleValue ) }
+            { !editMode && title }
 
             { editMode
             && <>

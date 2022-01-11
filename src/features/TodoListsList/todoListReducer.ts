@@ -1,8 +1,10 @@
 import { domainTodoListType, resCodes, todoListApi } from "../../Api/Api"
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { authActions } from '../Auth'
-import { tasksActions} from './'
+import { tasksActions } from './'
 import { statusType } from '../../utils/types'
+import { handleServerApiErrors, handleServerNetworkErrors } from '../../utils/error-utils'
+import { AxiosError } from 'axios'
 
 
 export type todoListType = domainTodoListType & {
@@ -50,15 +52,20 @@ export const slice = createSlice( {
                 }
             }
         } )
+        addCase( updateTodoName.rejected, (state, action) => {
+            const { id } = action.meta.arg
+            const todo = state.find( f => f.id === id )
+            if (todo) {
+                todo.todoStatus = 'idle'
+            }
+        } )
         addCase( getTodos.fulfilled, (state, action) => {
             if (action.payload) {
                 const { items } = action.payload
                 return [...items] as todoListType[]
             }
         } )
-        addCase( authActions.logout.fulfilled, () => {
-            return []
-        } )
+        addCase( authActions.logout.fulfilled, () => [] )
     },
 } )
 
@@ -67,16 +74,13 @@ const { updateTodoStatus } = slice.actions
 const addTodoList = createAsyncThunk( 'todo/addTodoList', async (title: string, thunkApi) => {
     const { rejectWithValue } = thunkApi
     try {
-        const { status, data: { data: { item }, resultCode, messages: [errorMessage] } } = await todoListApi.createTodoList( title )
-        if (status === 200 && resultCode === resCodes.success) {
-            // dispatch( addTodoToState( { item } ) )
+        const { data: { resultCode, data: { item }, messages: [errorMessage] } } = await todoListApi.createTodoList( title )
+        if (resultCode === resCodes.success) {
+            return { item }
         }
-        if (errorMessage) {
-            return rejectWithValue( { error: errorMessage } )
-        }
-        return { item }
+        return handleServerApiErrors( errorMessage, rejectWithValue )
     } catch (e) {
-        return rejectWithValue( e )
+        return handleServerNetworkErrors( e, rejectWithValue )
     }
 } )
 
@@ -117,15 +121,13 @@ const updateTodoName = createAsyncThunk( 'todo/updateTodo', async (arg: { id: st
     const { title, id } = arg
     const { rejectWithValue } = thunkAPI
     try {
-        const { status, data: { resultCode, messages: [errorMessage] } } = await todoListApi.updateTodoTitle( id, title )
-        if (status === 200 && resultCode === resCodes.success) {
+        const { data: { resultCode, messages: [errorMessage] } } = await todoListApi.updateTodoTitle( id, title )
+        if (resultCode === resCodes.success) {
             return { id, title }
         }
-        if (errorMessage) {
-            return rejectWithValue( { error: errorMessage } )
-        }
+        return handleServerApiErrors( errorMessage, rejectWithValue )
     } catch (e) {
-        console.log( e )
+        return handleServerNetworkErrors( e, rejectWithValue )
     }
 } )
 

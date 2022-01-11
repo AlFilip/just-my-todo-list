@@ -1,6 +1,7 @@
 import { authApi, loginPayloadType, resCodes } from '../../Api/Api'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { appActions } from '../Application/'
+import { handleServerApiErrors, handleServerNetworkErrors } from '../../utils/error-utils'
 
 
 const initState = {
@@ -28,24 +29,30 @@ export const slice = createSlice( {
 } )
 
 const getAuth = createAsyncThunk( 'auth/getAuth', async (arg, thunkAPI) => {
-    const {  rejectWithValue } = thunkAPI
+    const { rejectWithValue } = thunkAPI
     try {
         const { data: { data, resultCode } } = await authApi.me()
         if (resultCode === resCodes.success) {
             return { ...data, isAuth: true }
         }
     } catch (e) {
-        return rejectWithValue( e )
+        return handleServerNetworkErrors( e, rejectWithValue )
+
     }
 } )
 
 const login = createAsyncThunk( 'auth/login', async (arg: loginPayloadType, thunkAPI) => {
-    const { data: { fieldsErrors, resultCode } } = await authApi.login( arg )
-    if (resultCode === resCodes.success) {
-        thunkAPI.dispatch( appActions.initApp() )
-    }
-    if (fieldsErrors.length) {
-        thunkAPI.rejectWithValue(fieldsErrors)
+    try {
+        const { data: { resultCode, messages: [errorMessage] } } = await authApi.login( arg )
+        if (resultCode === resCodes.success) {
+            thunkAPI.dispatch( appActions.initApp() )
+        }
+        if (errorMessage) {
+            return handleServerApiErrors( errorMessage, thunkAPI.rejectWithValue )
+        }
+    } catch (e) {
+        return handleServerNetworkErrors( e, thunkAPI.rejectWithValue )
+
     }
 } )
 

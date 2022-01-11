@@ -29,16 +29,16 @@ function App() {
 
     return (
         <div className="App">
-                <Header/>
-                <Container>
-                    {
-                        isAuth
-                            ?
-                            <TodoListsList/>
-                            : <Login/>
-                    }
-                    <ErrorSnackbar/>
-                </Container>
+            <Header/>
+            {
+                isAuth
+
+                    ? <Container>
+                        <TodoListsList/>
+                    </Container>
+                    : <Login/>
+            }
+            <ErrorSnackbar/>
         </div>
     )
 }

@@ -19,7 +19,6 @@ export const TodoListTitle: React.FC<TodoListTitlePropsType> = React.memo( ({
                                                                                 disabled,
                                                                                 ...props
                                                                             }) => {
-    // console.log('TodoListTitle')
 
     return (
         <>

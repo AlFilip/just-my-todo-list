@@ -1,24 +1,26 @@
 import { authActions } from '../Auth'
-import { todosActions } from '../TodoListsList'
+import { tasksActions, todosActions } from '../TodoListsList'
 import { AnyAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { FulfilledAction, PendingAction, RejectedAction, statusType } from '../../utils/types'
+import { commonErrorType, FulfilledAction, PendingAction, RejectedAction, statusType } from '../../utils/types'
 
 
 function isPendingAction(action: AnyAction): action is PendingAction {
-    return action.type.endsWith('/pending')
+    return action.type.endsWith( '/pending' )
 }
+
 function isFulfilledAction(action: AnyAction): action is FulfilledAction {
-    return action.type.endsWith('/fulfilled')
+    return action.type.endsWith( '/fulfilled' )
 }
+
 function isRejectedAction(action: AnyAction): action is RejectedAction {
-    return action.type.endsWith('/rejected')
+    return action.type.endsWith( '/rejected' )
 }
 
 const ignoreIdleActionsTypes = [`auth/getAuth`, 'auth/login']
 
 const checkMatch = (type: string) => {
-    for (let item of ignoreIdleActionsTypes){
-        if (type.match(item)){
+    for (let item of ignoreIdleActionsTypes) {
+        if (type.match( item )) {
             return false
         }
     }
@@ -26,7 +28,7 @@ const checkMatch = (type: string) => {
 }
 
 function setIdle(state: appStateType, action: PayloadAction) {
-    if (checkMatch(action.type)) {
+    if (checkMatch( action.type )) {
         state.status = 'idle'
     }
 }
@@ -54,10 +56,26 @@ export const slice = createSlice( {
             state.status = 'idle'
             state.isInit = true
         } )
+        addCase( todosActions.updateTodoName.rejected, (state, action) => {
+            state.error = ( action.payload as commonErrorType ).error
+        } )
+        addCase( todosActions.addTodoList.rejected, (state, action) => {
+            state.error = ( action.payload as commonErrorType ).error
+        } )
+        addCase( tasksActions.createTask.rejected, (state, action) => {
+            state.error = ( action.payload as commonErrorType ).error
+        } )
+        addCase( tasksActions.updateTask.rejected, (state, action) => {
+            state.error = ( action.payload as commonErrorType ).error
+        } )
+        addCase( authActions.login.rejected, (state, action) => {
+            state.error = ( action.payload as commonErrorType ).error
+            state.status = 'idle'
+        } )
 
-        addMatcher(isPendingAction, setLoading)
-        addMatcher(isFulfilledAction, setIdle)
-        addMatcher(isRejectedAction, setIdle)
+        addMatcher( isPendingAction, setLoading )
+        addMatcher( isFulfilledAction, setIdle )
+        addMatcher( isRejectedAction, setIdle )
     },
 } )
 
@@ -76,6 +94,3 @@ const initApp = createAsyncThunk( 'app/initApp', async (arg, thunkAPI) => {
 export const asyncActions = {
     initApp,
 }
-
-
-

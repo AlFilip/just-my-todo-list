@@ -32,10 +32,10 @@ export enum TaskStatuses {
     Draft = 3
 }
 
-type commonResponseType<T = {}> = {
+export type commonResponseType<T = {}> = {
     data: T
     status: TaskStatuses
-    resultCode: number
+    resultCode: resCodes
     messages: string[]
     fieldsErrors: any[]
 }
@@ -58,7 +58,7 @@ type loginResponseType = {
         "userId": number
     },
     "messages": string[],
-    "fieldsErrors": [],
+    "fieldsErrors": string[],
     "resultCode": resCodes
 }
 
@@ -104,7 +104,7 @@ export const todoListApi = {
 }
 
 
-export type domainTaskType = {
+export type DomainTaskType = {
     description: string | null
     title: string
     status: TaskStatuses
@@ -118,7 +118,7 @@ export type domainTaskType = {
 }
 
 type getTasksResponseType = {
-    items: domainTaskType[]
+    items: DomainTaskType[]
     totalCount: number
     error: null | string
     fieldsErrors: any[]
@@ -129,7 +129,7 @@ export const tasksApi = {
         return axiosTodoReq.get<getTasksResponseType>( `/${ todoListId }/tasks` )
     },
     addTask: (todoListId: string, title: string) => {
-        return axiosTodoReq.post<commonResponseType<{ item: domainTaskType }>>( `${ todoListId }/tasks`, { title } )
+        return axiosTodoReq.post<commonResponseType<{ item: DomainTaskType }>>( `${ todoListId }/tasks`, { title } )
     },
     deleteTask: (todoListId: string, taskId: string) => {
         return axiosTodoReq.delete<commonResponseType>( `${ todoListId }/tasks/${ taskId }` )

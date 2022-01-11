@@ -1,0 +1,43 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - 68px);
+}
+
+.loginForm{
+    display: flex;
+    flex-direction: column;
+    width: 15rem;
+    padding:  0.3rem 1rem 1.5rem;
+    border: 2px solid rgba(100, 100, 100, 0.3);
+    border-radius: 0.5rem;
+    box-shadow: 0 0 12px rgba(100, 100, 100, 0.8);
+    background-color: #cbcbcb;
+}
+
+.header{
+    font-size: 1.3rem;
+    color: rgb(65, 72, 114)
+}
+
+div div input.email {
+    background-color: #D7D7D6;
+}
+
+div div input.password {
+    background-color: #D7D7D6;
+}
+
+.checkbox {
+    padding: 1rem;
+}
+
+.btn{
+    width: fit-content;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    align-self: center;
+}
