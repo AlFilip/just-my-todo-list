@@ -1,11 +1,11 @@
 import { v1 } from "uuid"
-import tasksReducer, { createTask, deleteTask, fetchTasks, tasksStateType, taskType, updateTask } from "./tasksReducer"
+import tasksReducer, { createTask, deleteTask, fetchTasks, TasksStateType, TaskType, updateTask } from "./tasksReducer"
 import { TaskStatuses } from '../../Api/Api'
 
 
 const [todoListId1] = [v1()]
-let startState: tasksStateType
-let task: taskType
+let startState: TasksStateType
+let task: TaskType
 
 beforeEach( () => {
     startState = {

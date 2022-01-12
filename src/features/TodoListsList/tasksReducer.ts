@@ -1,22 +1,22 @@
-import { DomainTaskType, resCodes, tasksApi } from "../../Api/Api"
+import { DomainTaskType, ResCodes, tasksApi } from "../../Api/Api"
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { todosActions } from './index'
 import { authActions } from '../Auth'
-import { statusType } from '../../utils/types'
+import { StatusType } from '../../utils/types'
 import { handleServerApiErrors, handleServerNetworkErrors } from '../../utils/error-utils'
 
 
-export type taskType = DomainTaskType & {
-    fetchStatus: statusType
+export type TaskType = DomainTaskType & {
+    fetchStatus: StatusType
 }
 
-export type tasksStateType = {
-    [todoListId: string]: taskType[]
+export type TasksStateType = {
+    [todoListId: string]: TaskType[]
 }
 
 export const slice = createSlice( {
     name: 'tasks',
-    initialState: {} as tasksStateType,
+    initialState: {} as TasksStateType,
     reducers: {},
     extraReducers({ addCase }) {
         addCase( todosActions.removeTodoList.fulfilled, (state, action) => {
@@ -38,9 +38,7 @@ export const slice = createSlice( {
                 state[todoListId] = items.map( m => ( { ...m, fetchStatus: 'idle' } ) )
             }
         } )
-        addCase( fetchTasks.rejected, (state, action) => {
-            console.log( action )
-        } )
+
 
         addCase( createTask.fulfilled, (state, action) => {
             if (action.payload) {
@@ -62,6 +60,13 @@ export const slice = createSlice( {
                 let tasks = state[todoListId]
                 const index = tasks.findIndex( f => f.id === taskId )
                 tasks.splice( index, 1 )
+            }
+        } )
+        addCase( deleteTask.rejected, (state, action) => {
+            const { todoListId, taskId } = action.meta.arg
+            const task = state[todoListId].find( f => f.id === taskId )
+            if (task) {
+                task.fetchStatus = 'idle'
             }
         } )
 
@@ -92,10 +97,8 @@ export const slice = createSlice( {
     },
 } )
 
-export type FieldErrorType = { field: string; error: string }
-export type ThunkError = { rejectValue: { errors: Array<string>, fieldsErrors?: Array<FieldErrorType> } }
 
-const fetchTasks = createAsyncThunk<{ items: DomainTaskType[], todoListId: string }, string, ThunkError>( 'tasks/fetchTasks', async (todoListId: string, thunkApi) => {
+const fetchTasks = createAsyncThunk<{ items: DomainTaskType[], todoListId: string }, string>( 'tasks/fetchTasks', async (todoListId: string, thunkApi) => {
     try {
         const { data: { items } } = await tasksApi.getTasks( todoListId )
         return { todoListId, items }
@@ -109,7 +112,7 @@ const createTask = createAsyncThunk( 'tasks/createTask', async (payload: { todoL
     const { todoListId, title } = payload
     try {
         const { data: { data: { item }, resultCode, messages: [errorMessage] } } = await tasksApi.addTask( todoListId, title )
-        if (resultCode === resCodes.success) {
+        if (resultCode === ResCodes.success) {
             return { todoListId, item }
         }
         return handleServerApiErrors( errorMessage, rejectWithValue )
@@ -123,7 +126,7 @@ const deleteTask = createAsyncThunk( 'tasks/deleteTask', async (payload: { todoL
     const { rejectWithValue } = thunkApi
     try {
         const { data: { resultCode, messages: [errorMessage] } } = await tasksApi.deleteTask( todoListId, taskId )
-        if (resultCode === resCodes.success) {
+        if (resultCode === ResCodes.success) {
             return { todoListId, taskId }
         }
         return handleServerApiErrors( errorMessage, rejectWithValue )
@@ -132,12 +135,12 @@ const deleteTask = createAsyncThunk( 'tasks/deleteTask', async (payload: { todoL
     }
 } )
 
-const updateTask = createAsyncThunk( 'tasks/updateTask', async (payload: { todoListId: string, task: taskType }, thunkApi) => {
+const updateTask = createAsyncThunk( 'tasks/updateTask', async (payload: { todoListId: string, task: TaskType }, thunkApi) => {
     const { todoListId, task } = payload
     const { rejectWithValue } = thunkApi
     try {
         const { data: { resultCode, messages: [errorMessage] } } = await tasksApi.updateTask( todoListId, task )
-        if (resultCode === resCodes.success) {
+        if (resultCode === ResCodes.success) {
             return { todoListId, task }
         }
         return handleServerApiErrors( errorMessage, rejectWithValue )

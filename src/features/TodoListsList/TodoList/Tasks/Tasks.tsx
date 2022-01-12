@@ -4,11 +4,11 @@ import { Task } from "./Task/Task"
 import { TaskStatuses } from '../../../../Api/Api'
 import { filterValueType } from '../../TodoList'
 import { useAppSelector } from '../../../../utils/redux-utils'
-import { statusType } from '../../../../utils/types'
+import { StatusType } from '../../../../utils/types'
 
 
 type AlternativeTasksPropsType = {
-    todoStatus: statusType
+    todoStatus: StatusType
     todoListFilter: filterValueType
     todoListId: string
 }

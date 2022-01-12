@@ -5,17 +5,17 @@ import EditIcon from '@mui/icons-material/Edit'
 import { AddItemForm } from "../../../../../Components/AdditemForm/AddItemForm"
 import { TaskStatuses } from '../../../../../Api/Api'
 import { tasksActions } from '../../../'
-import { taskType } from '../../../tasksReducer'
+import { TaskType } from '../../../tasksReducer'
 import { useActions } from '../../../../../utils/redux-utils'
-import { statusType } from '../../../../../utils/types'
+import { StatusType } from '../../../../../utils/types'
 import { MyTheme } from '../../../../../utils/theme'
 import ThemeProvider from '@mui/material/styles/ThemeProvider'
 import s from './Task.module.css'
 
 
 export type TaskPropsType = {
-    todoStatus: statusType
-    taskEntity: taskType
+    todoStatus: StatusType
+    taskEntity: TaskType
 }
 
 export const Task: React.FC<TaskPropsType> = React.memo( ({

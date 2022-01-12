@@ -1,8 +1,8 @@
 import axios from "axios"
-import { taskType } from "../features/TodoListsList/tasksReducer"
+import { TaskType } from "../features/TodoListsList/tasksReducer"
 
 
-export enum resCodes {
+export enum ResCodes {
     success = 0,
     error = 1,
 }
@@ -32,54 +32,54 @@ export enum TaskStatuses {
     Draft = 3
 }
 
-export type commonResponseType<T = {}> = {
+export type CommonResponseType<T = {}> = {
     data: T
     status: TaskStatuses
-    resultCode: resCodes
+    resultCode: ResCodes
     messages: string[]
     fieldsErrors: any[]
 }
 
-export type authMeDataType = {
+export type AuthMeDataType = {
     "id": number
     "login": string
     "email": string
 }
 
-export type loginPayloadType = {
+export type LoginPayloadType = {
     email: string
     password: string
     rememberMe?: boolean
     captcha?: string
 }
 
-type loginResponseType = {
+type LoginResponseType = {
     "data": {
         "userId": number
     },
     "messages": string[],
     "fieldsErrors": string[],
-    "resultCode": resCodes
+    "resultCode": ResCodes
 }
 
 export const authApi = {
-    me: () => axiosAuthReq.get<commonResponseType<authMeDataType>>( 'me' ),
-    login(payload: loginPayloadType) {
-        return axiosAuthReq.post<loginResponseType>( 'login', payload )
+    me: () => axiosAuthReq.get<CommonResponseType<AuthMeDataType>>( 'me' ),
+    login(payload: LoginPayloadType) {
+        return axiosAuthReq.post<LoginResponseType>( 'login', payload )
     },
     logout() {
         return axiosAuthReq.delete( 'login' )
     },
 }
 
-export type domainTodoListType = {
+export type DomainTodoListType = {
     id: string
     title: string
     addedDate: string
     order: number
 }
 
-type todoDataType = {
+type TodoDataType = {
     item: {
         id: string
         title: string
@@ -89,17 +89,17 @@ type todoDataType = {
 }
 
 export const todoListApi = {
-    getTodoLists: () => axiosTodoReq.get<domainTodoListType[]>( '' ),
+    getTodoLists: () => axiosTodoReq.get<DomainTodoListType[]>( '' ),
 
     createTodoList: (title: string) => {
-        return axiosTodoReq.post<commonResponseType<todoDataType>>( '', { title } )
+        return axiosTodoReq.post<CommonResponseType<TodoDataType>>( '', { title } )
     },
 
     removeTodoList: (id: string) => {
-        return axiosTodoReq.delete<commonResponseType>( `${ id }` )
+        return axiosTodoReq.delete<CommonResponseType>( `${ id }` )
     },
     updateTodoTitle: (todoListId: string, title: string) => {
-        return axiosTodoReq.put<commonResponseType>( `${ todoListId }`, { title } )
+        return axiosTodoReq.put<CommonResponseType>( `${ todoListId }`, { title } )
     },
 }
 
@@ -117,7 +117,7 @@ export type DomainTaskType = {
     addedDate: string
 }
 
-type getTasksResponseType = {
+type GetTasksResponseType = {
     items: DomainTaskType[]
     totalCount: number
     error: null | string
@@ -126,45 +126,17 @@ type getTasksResponseType = {
 
 export const tasksApi = {
     getTasks: (todoListId: string) => {
-        return axiosTodoReq.get<getTasksResponseType>( `/${ todoListId }/tasks` )
+        return axiosTodoReq.get<GetTasksResponseType>( `/${ todoListId }/tasks` )
     },
     addTask: (todoListId: string, title: string) => {
-        return axiosTodoReq.post<commonResponseType<{ item: DomainTaskType }>>( `${ todoListId }/tasks`, { title } )
+        return axiosTodoReq.post<CommonResponseType<{ item: DomainTaskType }>>( `${ todoListId }/tasks`, { title } )
     },
     deleteTask: (todoListId: string, taskId: string) => {
-        return axiosTodoReq.delete<commonResponseType>( `${ todoListId }/tasks/${ taskId }` )
+        return axiosTodoReq.delete<CommonResponseType>( `${ todoListId }/tasks/${ taskId }` )
     },
-    updateTask: (todoListId: string, task: taskType) => {
-        return axiosTodoReq.put<commonResponseType>( `${ todoListId }/tasks/${ task.id }`, task )
+    updateTask: (todoListId: string, task: TaskType) => {
+        return axiosTodoReq.put<CommonResponseType>( `${ todoListId }/tasks/${ task.id }`, task )
 
     },
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

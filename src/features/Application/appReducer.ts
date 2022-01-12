@@ -1,7 +1,8 @@
 import { authActions } from '../Auth'
 import { tasksActions, todosActions } from '../TodoListsList'
 import { AnyAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { commonErrorType, FulfilledAction, PendingAction, RejectedAction, statusType } from '../../utils/types'
+import { CommonErrorType, FulfilledAction, PendingAction, RejectedAction, StatusType } from '../../utils/types'
+import { handleServerNetworkErrors } from '../../utils/error-utils'
 
 
 function isPendingAction(action: AnyAction): action is PendingAction {
@@ -27,23 +28,30 @@ const checkMatch = (type: string) => {
     return true
 }
 
-function setIdle(state: appStateType, action: PayloadAction) {
+function setIdle(state: AppStateType, action: PayloadAction) {
     if (checkMatch( action.type )) {
         state.status = 'idle'
     }
 }
 
-function setLoading(state: appStateType) {
+function setError(state: AppStateType, action: PayloadAction) {
+    if (checkMatch( action.type )) {
+        state.status = 'idle'
+    }
+    state.error = ( action.payload as unknown as CommonErrorType ).error
+}
+
+function setLoading(state: AppStateType) {
     state.status = 'loading'
 }
 
-export type appStateType = ReturnType<typeof slice.reducer>
+export type AppStateType = ReturnType<typeof slice.reducer>
 
 export const slice = createSlice( {
     name: 'app',
     initialState: {
         isInit: false,
-        status: 'loading' as statusType,
+        status: 'loading' as StatusType,
         error: null as null | string,
     },
     reducers: {
@@ -56,26 +64,32 @@ export const slice = createSlice( {
             state.status = 'idle'
             state.isInit = true
         } )
-        addCase( todosActions.updateTodoName.rejected, (state, action) => {
-            state.error = ( action.payload as commonErrorType ).error
-        } )
-        addCase( todosActions.addTodoList.rejected, (state, action) => {
-            state.error = ( action.payload as commonErrorType ).error
-        } )
-        addCase( tasksActions.createTask.rejected, (state, action) => {
-            state.error = ( action.payload as commonErrorType ).error
-        } )
-        addCase( tasksActions.updateTask.rejected, (state, action) => {
-            state.error = ( action.payload as commonErrorType ).error
-        } )
-        addCase( authActions.login.rejected, (state, action) => {
-            state.error = ( action.payload as commonErrorType ).error
-            state.status = 'idle'
-        } )
+        // addCase( todosActions.getTodos.rejected, (state, action) => {
+        //     state.error = ( action.payload as CommonErrorType ).error
+        // } )
+        // addCase( todosActions.updateTodoName.rejected, (state, action) => {
+        //     state.error = ( action.payload as CommonErrorType ).error
+        // } )
+        // addCase( todosActions.addTodoList.rejected, (state, action) => {
+        //     state.error = ( action.payload as CommonErrorType ).error
+        // } )
+        // addCase( tasksActions.createTask.rejected, (state, action) => {
+        //     state.error = ( action.payload as CommonErrorType ).error
+        // } )
+        // addCase( tasksActions.fetchTasks.rejected, (state, action) => {
+        //     state.error = ( action.payload as CommonErrorType ).error
+        // } )
+        // addCase( tasksActions.updateTask.rejected, (state, action) => {
+        //     state.error = ( action.payload as CommonErrorType ).error
+        // } )
+        // addCase( authActions.login.rejected, (state, action) => {
+        //     state.error = ( action.payload as CommonErrorType ).error
+        //     state.status = 'idle'
+        // } )
 
         addMatcher( isPendingAction, setLoading )
         addMatcher( isFulfilledAction, setIdle )
-        addMatcher( isRejectedAction, setIdle )
+        addMatcher( isRejectedAction, setError )
     },
 } )
 
@@ -87,7 +101,7 @@ const initApp = createAsyncThunk( 'app/initApp', async (arg, thunkAPI) => {
             return await dispatch( todosActions.getTodos() )
         }
     } catch (e) {
-        return rejectWithValue( e )
+        return handleServerNetworkErrors( e, rejectWithValue )
     }
 } )
 

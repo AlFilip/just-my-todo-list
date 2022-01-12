@@ -6,13 +6,13 @@ import { tasksActions, todosActions } from "./"
 import { AddItemForm } from "../../Components/AdditemForm/AddItemForm"
 import { Tasks } from "./TodoList/Tasks/Tasks"
 import { useActions } from '../../utils/redux-utils'
-import { statusType } from '../../utils/types'
+import { StatusType } from '../../utils/types'
 
 
 type TodoListPropsType = {
     todoListId: string
     title: string
-    todoStatus: statusType
+    todoStatus: StatusType
 }
 export type filterValueType = 'All' | 'Completed' | 'Active'
 
@@ -29,11 +29,11 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo( ({
     const { createTask } = useActions( tasksActions )
 
     const removeTodo = useCallback( () => {
-        removeTodoList( todoListId )
+        removeTodoList( { todoListId} )
     }, [removeTodoList, todoListId] )
 
     const changeTodoTitle = useCallback( (title: string) => {
-        updateTodoName( { id: todoListId, title } )
+        updateTodoName( { todoListId, title } )
     }, [updateTodoName, todoListId] )
 
     const addTask = useCallback( (title: string) => {

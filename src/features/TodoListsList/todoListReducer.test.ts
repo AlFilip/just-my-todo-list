@@ -1,9 +1,9 @@
 import { v1 } from "uuid"
-import todoListReducer, { addTodoList, getTodos, removeTodoList, todoListType, updateTodoName } from './todoListReducer'
+import todoListReducer, { addTodoList, getTodos, removeTodoList, TodoListType, updateTodoName } from './todoListReducer'
 
 
-let startState: todoListType[]
-let item: todoListType
+let startState: TodoListType[]
+let item: TodoListType
 
 
 const todoListId1 = v1()
